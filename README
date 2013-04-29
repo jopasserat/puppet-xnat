@@ -1,0 +1,5 @@
+== XNAT puppet module ==
+
+This module configures an XNAT installation.
+
+This is in the early stages of development, so don't expect a working system (just yet ;))
