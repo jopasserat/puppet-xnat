@@ -32,15 +32,18 @@
 class xnat ($servertype = 'development') {
 
   # Tomcat
-  class {'tomcat': }
+  class { 'tomcat': }
   
   # If the servertype is development use mercurial to clone the XNAT repositories (builder and pipeline)
   if $servertype == 'development' {
-    class {'mercurial': }
+    class { 'mercurial': }
   }
  
   # PostgreSQL with alternate db location
-  class {'postgresql': }
+  class { 'postgresql': }
   
+  class { 'wget': } 
+  
+  #class { 'archive': }
  
 }
