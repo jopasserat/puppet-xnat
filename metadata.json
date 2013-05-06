@@ -10,11 +10,12 @@
   "checksums": {
     "LICENSE": "65008d4c757355ca301db0cc3e874f8e",
     "Modulefile": "d1319125e89f479297ec835813e09ef4",
+    "README": "1266ba180fd25b8b9fdc192ddc66b811",
     "lib/facter/java_home.rb": "73f3b385c5fb29416249cd0e49da7cd5",
-    "manifests/init.pp": "a0907c7829d212833db3f8e7fd625e56",
-    "manifests/xnatapp.pp": "b3c876c7d4f5d865afd27c9811012c0d",
+    "manifests/init.pp": "b9164a883bc7b32c04f2e19b7170a542",
+    "manifests/xnatapp.pp": "8d432589f772cf8748e58dd040eca0fd",
     "templates/build.properties.erb": "12426a402b7de335fb0d66d0ac11fcad",
-    "test/test_xnatapp.pp": "939727ada9575021c345a2c58ec4a39f"
+    "test/test_xnatapp.pp": "9928be5a07343cee0d9cb32471482425"
   },
   "dependencies": []
 }

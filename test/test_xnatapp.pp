@@ -9,5 +9,6 @@ xnat::xnatapp { 'xnat-web-app-1':
   xnat_number => "0", #this is the prefix of the port number starting with: 808x
   system_user => "xnat",
   instance_name => "xnat-web-app-1",
-  webapp_base => "/home"
+  webapp_base => "/home",
+  download_method => "ftp",
 }
