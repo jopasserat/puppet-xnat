@@ -26,14 +26,16 @@ define xnat::xnatapp (
   $xnat_number = "0", #this is the prefix of the port number starting with: 808x
   $system_user = "xnat",
   $instance_name = "xnat-web-app-1",
-  $webapp_base = "/home"
+  $webapp_base = "/home",
+  $download_method = "ftp", # can be either 'mercurial' or 'ftp' 
 )
 {
   require xnat
   require postgresql::server
   
   $tomcat_root = "$webapp_base/$system_user/tomcat"
-  $installer_dir = '/home/$system_user/xnat-builder'
+  $installer_dir = "/home/$system_user/xnat-builder"
+  $download_dir = "/home/$system_user/downloads"
   #$archive_dirs = split($archive_root,'/')
   $archive_dirs = ["$archive_root/archive","$archive_root/build","$archive_root/cache","$archive_root/ftp","$archive_root/prearchive","$archive_root/modules"]
 
@@ -55,7 +57,7 @@ define xnat::xnatapp (
     command => "/bin/mkdir -p $archive_root"
   }
   ->
-  # Make the 
+  # Make the archive directories
   file { $archive_dirs:
     ensure => "directory",
     mode => "700",
@@ -87,20 +89,39 @@ define xnat::xnatapp (
     command => "/bin/rm -rf $installer_dir",
   }
   ->
-  # Clone the xnat builder dev branch
-  exec { "mercurial-clone-xnatbuilder":
-    command => "/usr/bin/hg clone http://hg.xnat.org/xnat_builder_1_6dev $installer_dir",
-    creates => $installer_dir,
-    timeout => 12000000,
+#  wget::fetch { "download-xnat":
+#    source => "ftp://ftp.nrg.wustl.edu/pub/xnat/xnat_1_6_1.tar.gz",
+#    destination => "$download_dir/xnat_1_6_1.tar.gz",
+#    timeout => 0,
+#    verbose => true,
+#  }
+#  ->
+  archive { 'xnat-1.6.1':
+    ensure => present,
+    #url    => 'ftp://ftp.nrg.wustl.edu/pub/xnat/xnat_1_6_1.tar.gz',
+    url    => 'http://192.168.122.1/xnat_1_6_1.tar.gz',
+    target => $download_dir,
+    timeout => 240,  
   }
   ->
-  # Clone the xnat pipeline dev branch
-  exec { "mercurial-clone-xnat-pipeline":
-    command => "/usr/bin/hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pipeline",
-    creates => "$installer_dir/pipeline",
-    timeout => 12000000,
+  exec { "move-to-installer-dir":
+    command => "/bin/mv $download_dir/xnat $installer_dir"
   }
   ->
+#  # Clone the xnat builder dev branch
+#  exec { "mercurial-clone-xnatbuilder":
+#    command => "/usr/bin/hg clone http://hg.xnat.org/xnat_builder_1_6dev $installer_dir",
+#    creates => $installer_dir,
+#    timeout => 12000000,
+#  }
+#  ->
+#  # Clone the xnat pipeline dev branch
+#  exec { "mercurial-clone-xnat-pipeline":
+#    command => "/usr/bin/hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pipeline",
+#    creates => "$installer_dir/pipeline",
+#    timeout => 12000000,
+#  }
+#  ->
   #Configure the XNAT build properties.
   file { "$installer_dir/build.properties":
     ensure => file,
