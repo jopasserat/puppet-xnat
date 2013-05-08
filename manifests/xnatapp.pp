@@ -38,12 +38,21 @@ define xnat::xnatapp (
   $download_dir = "/home/$system_user/downloads"
   #$archive_dirs = split($archive_root,'/')
   $archive_dirs = ["$archive_root/archive","$archive_root/build","$archive_root/cache","$archive_root/ftp","$archive_root/prearchive","$archive_root/modules"]
-
+  
+  exec { "apt-get update":
+    command => "/usr/bin/apt-get update",
+    onlyif => "/bin/sh -c '[ ! -f /var/cache/apt/pkgcache.bin ] || /usr/bin/find /etc/apt/* -cnewer /var/cache/apt/pkgcache.bin | /bin/grep . > /dev/null'",
+  }
+  ->
   tomcat::webapp { $instance_name:
     username => $system_user,
     webapp_base => $webapp_base,
     number => $xnat_number,
-    java_opts => "-Xms512m -Xmx1024m"
+    java_opts => "-Xms512m -Xmx1024m",
+  }
+  ->
+  package{ "openjdk-6-jdk":
+    ensure => present,
   }
 #  tomcat::instance { $instance_name:
 #    ensure => present,

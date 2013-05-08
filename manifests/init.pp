@@ -22,6 +22,7 @@
 # https://github.com/jurgenlust/puppet-tomcat
 # #puppet module install camptocamp/tomcat
 # #of puppet module install llehmijo/tomcat7_rhel
+# puppet module install smarchive/archive
 # puppet module install puppetlabs/postgresql
 # puppet module install maestrodev/wget
 #
@@ -42,7 +43,7 @@ class xnat ($servertype = 'development') {
   # PostgreSQL with alternate db location
   class { 'postgresql': }
   
-  class { 'wget': } 
+  #class { 'wget': } 
   
   #class { 'archive': }
  
