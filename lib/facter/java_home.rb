@@ -17,6 +17,6 @@
 
 Facter.add("java_home") do
   setcode do
-    Facter::Util::Resolution.exec('readlink -f /usr/bin/java | sed "s:bin/java::"')
+    Facter::Util::Resolution.exec('readlink -f /usr/bin/java | sed "s:jre/bin/java::"')
   end
 end
