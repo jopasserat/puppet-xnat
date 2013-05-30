@@ -32,7 +32,6 @@ define xnat::xnatapp (
 {
   require xnat
   require postgresql::server
-  require java
   
   $tomcat_root = "$webapp_base/$system_user/tomcat"
   $installer_dir = "/home/$system_user/xnat-builder"
@@ -64,7 +63,7 @@ define xnat::xnatapp (
 
   # Set correct java version
   exec { "update-alternatives install sun jdk":
-    command => "cat /usr/lib/jvm/.jdk${java::params::java_version}.jinfo | grep -E '^(jre|jdk)' | awk '{print \"/usr/bin/\" \$2 \" \" \$2 \" \" \$3 \" 30 \r \"}' | xargs -t -n4 sudo update-alternatives --verbose --install"
+    command => "cat /usr/lib/jvm/.jdk1.7.0_21.jinfo | grep -E '^(jre|jdk)' | awk '{print \"/usr/bin/\" \$2 \" \" \$2 \" \" \$3 \" 30 \r \"}' | xargs -t -n4 sudo update-alternatives --verbose --install"
   }
   -> 
 
@@ -157,15 +156,10 @@ define xnat::xnatapp (
   }
   ->
 
-  exec { "xnat-setup":
-    command => "$java_home",
-  }
-  ->
-
   # Execute the setup script
   # TODO Failes for second time
   exec { "xnat-setup":
-    command => "echo $java_home && $installer_dir/bin/setup.sh > setup.out",
+    command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
     environment => "JAVA_HOME=$java_home",
     timeout => 3600000
@@ -193,7 +187,7 @@ define xnat::xnatapp (
   ->
 
   exec {"deploy webapp":
-    command => "mv $installer_dir/deployments/$instance_name/target/$instance_name.war /var/lib/tomcat6/webapps/"
+    command => "mv $installer_dir/deployments/$instance_name/target/$instance_name.war /var/lib/tomcat7/webapps/"
   }
   ->
 
@@ -206,9 +200,9 @@ define xnat::xnatapp (
   #->
 
   # Make the WAR readable for the tomcat server
-  file { "/var/lib/tomcat6/webapps/xnat-web-app-1.war":
-    owner => tomcat6,
-    group => tomcat6,
-    mode => 755
-  }
+  #file { "/var/lib/tomcat7/webapps/xnat-web-app-1.war":
+  #  owner => tomcat7,
+  #  group => tomcat7,
+  #  mode => 755
+  #}
 }
