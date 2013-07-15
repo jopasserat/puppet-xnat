@@ -1,0 +1,47 @@
+name=jdk1.7.0_21-1.6.0.26
+alias=jdk1.7.0_21
+priority=1
+
+jre ControlPanel /usr/lib/jvm/jdk1.7.0_21/jre/bin/ControlPanel
+jre java /usr/lib/jvm/jdk1.7.0_21/jre/bin/java
+jre java_vm /usr/lib/jvm/jdk1.7.0_21/jre/bin/java_vm
+jre javaws /usr/lib/jvm/jdk1.7.0_21/jre/bin/javaws
+jre jcontrol /usr/lib/jvm/jdk1.7.0_21/jre/bin/jcontrol
+jre keytool /usr/lib/jvm/jdk1.7.0_21/jre/bin/keytool
+jre pack200 /usr/lib/jvm/jdk1.7.0_21/jre/bin/pack200
+jre policytool /usr/lib/jvm/jdk1.7.0_21/jre/bin/policytool
+jre rmid /usr/lib/jvm/jdk1.7.0_21/jre/bin/rmid
+jre rmiregistry /usr/lib/jvm/jdk1.7.0_21/jre/bin/rmiregistry
+jre unpack200 /usr/lib/jvm/jdk1.7.0_21/jre/bin/unpack200
+jre orbd /usr/lib/jvm/jdk1.7.0_21/jre/bin/orbd
+jre servertool /usr/lib/jvm/jdk1.7.0_21/jre/bin/servertool
+jre tnameserv /usr/lib/jvm/jdk1.7.0_21/jre/bin/tnameserv
+jre jexec /usr/lib/jvm/jdk1.7.0_21/jre/lib/jexec
+jdk appletviewer /usr/lib/jvm/jdk1.7.0_21/bin/appletviewer
+jdk apt /usr/lib/jvm/jdk1.7.0_21/bin/apt
+jdk extcheck /usr/lib/jvm/jdk1.7.0_21/bin/extcheck
+jdk idlj /usr/lib/jvm/jdk1.7.0_21/bin/idlj
+jdk jar /usr/lib/jvm/jdk1.7.0_21/bin/jar
+jdk jarsigner /usr/lib/jvm/jdk1.7.0_21/bin/jarsigner
+jdk javac /usr/lib/jvm/jdk1.7.0_21/bin/javac
+jdk javadoc /usr/lib/jvm/jdk1.7.0_21/bin/javadoc
+jdk javah /usr/lib/jvm/jdk1.7.0_21/bin/javah
+jdk javap /usr/lib/jvm/jdk1.7.0_21/bin/javap
+jdk jconsole /usr/lib/jvm/jdk1.7.0_21/bin/jconsole
+jdk jdb /usr/lib/jvm/jdk1.7.0_21/bin/jdb
+jdk jhat /usr/lib/jvm/jdk1.7.0_21/bin/jhat
+jdk jinfo /usr/lib/jvm/jdk1.7.0_21/bin/jinfo
+jdk jmap /usr/lib/jvm/jdk1.7.0_21/bin/jmap
+jdk jps /usr/lib/jvm/jdk1.7.0_21/bin/jps
+jdk jrunscript /usr/lib/jvm/jdk1.7.0_21/bin/jrunscript
+jdk jsadebugd /usr/lib/jvm/jdk1.7.0_21/bin/jsadebugd
+jdk jstack /usr/lib/jvm/jdk1.7.0_21/bin/jstack
+jdk jstat /usr/lib/jvm/jdk1.7.0_21/bin/jstat
+jdk jstatd /usr/lib/jvm/jdk1.7.0_21/bin/jstatd
+jdk native2ascii /usr/lib/jvm/jdk1.7.0_21/bin/native2ascii
+jdk rmic /usr/lib/jvm/jdk1.7.0_21/bin/rmic
+jdk schemagen /usr/lib/jvm/jdk1.7.0_21/bin/schemagen
+jdk serialver /usr/lib/jvm/jdk1.7.0_21/bin/serialver
+jdk wsgen /usr/lib/jvm/jdk1.7.0_21/bin/wsgen
+jdk wsimport /usr/lib/jvm/jdk1.7.0_21/bin/wsimport
+jdk xjc /usr/lib/jvm/jdk1.7.0_21/bin/xjc

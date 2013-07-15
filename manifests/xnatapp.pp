@@ -30,15 +30,13 @@ define xnat::xnatapp (
   $download_method = "ftp", # can be either 'mercurial' or 'ftp' 
 )
 {
-  require xnat
   require postgresql::server
   
   $tomcat_root = "$webapp_base/$system_user/tomcat"
   $installer_dir = "/home/$system_user/xnat-builder"
   $download_dir = "/home/$system_user/downloads"
-  #$archive_dirs = split($archive_root,'/')
   $archive_dirs = ["$archive_root", "$archive_root/archive","$archive_root/build","$archive_root/cache","$archive_root/ftp","$archive_root/prearchive","$archive_root/modules"]
-  
+
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
   
@@ -149,6 +147,13 @@ define xnat::xnatapp (
   ->
 
   # Configure the XNAT build properties.
+  #exec { "update ip in build.properties" :
+    
+    #command => "IP=$(ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}' && sed -i "s/test/$IP/g" xnat/templates/build.properties.erb)"
+    #cwd => "/etc/puppet/modules/
+  #}
+  #->
+
   file { "$installer_dir/build.properties":
     ensure => file,
     content => template('xnat/build.properties.erb'),
@@ -187,9 +192,9 @@ define xnat::xnatapp (
   ->
 
   exec {"deploy webapp":
-    command => "mv $installer_dir/deployments/$instance_name/target/$instance_name.war /var/lib/tomcat7/webapps/"
+    command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /var/lib/tomcat7/webapps/ && service tomcat7 restart"
   }
-  ->
+  #->
 
   # Use update.sh for easier debugging, but takes some time as it recompiles the sources
   #exec { "deploy webapp":
