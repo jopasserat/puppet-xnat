@@ -71,23 +71,6 @@ define xnat::xnatapp (
   }
   ->
 
-  # Install tomcat
-  ##tomcat::webapp { $instance_name:
-  #  username => $system_user,
-  #  webapp_base => $webapp_base,
-  #  number => $xnat_number,
-  #  java_opts => "-Xms512m -Xmx1024m",
-  #}
-  #->
-  
-  #tomcat::instance { $instance_name:
-  #  ensure => present,
-  #  owner => $system_user,
-  #  http_port => $xnat_port,
-  #  setenv => ['ADD_JAVA_OPTS="-Xms512m -Xmx1024m"'],
-  #}
-  #->
-  
   # Ensure archive directories are present
   exec {"make xnat archive directories":
     command => "sh /etc/puppet/modules/xnat/tests/makedirs.sh"
@@ -146,14 +129,6 @@ define xnat::xnatapp (
   }
   ->
 
-  # Configure the XNAT build properties.
-  #exec { "update ip in build.properties" :
-    
-    #command => "IP=$(ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}' && sed -i "s/test/$IP/g" xnat/templates/build.properties.erb)"
-    #cwd => "/etc/puppet/modules/
-  #}
-  #->
-
   file { "$installer_dir/build.properties":
     ensure => file,
     content => template('xnat/build.properties.erb'),
@@ -203,11 +178,4 @@ define xnat::xnatapp (
   #  environment => "JAVA_HOME=$java_home"
   #}
   #->
-
-  # Make the WAR readable for the tomcat server
-  #file { "/var/lib/tomcat7/webapps/xnat-web-app-1.war":
-  #  owner => tomcat7,
-  #  group => tomcat7,
-  #  mode => 755
-  #}
 }
