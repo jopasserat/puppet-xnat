@@ -13,11 +13,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Get the JAVA_HOME environment variable path.
-
 Facter.add("ip_address") do
   setcode do
-    Facter::Util::Resolution.exec("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'")
+    if $operatingsystem != "Fedora" then
+      #Facter::Util::Resolution.exec("iffconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $2}'")
+      #else 
+      Facter::Util::Resolution.exec("iffconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'")
+    end
   end
 end
-
