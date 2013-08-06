@@ -27,6 +27,7 @@ define xnat::xnatapp (
   require tomcat
   require java
   require postgresql::server
+  import "postgres"
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat-builder"
@@ -35,12 +36,21 @@ define xnat::xnatapp (
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
+  exec { "test":
+    command => "echo $ip_address > ip.out"
+  } ->
+
+  # Stop tomcat
+  exec { "stop tomcat":
+    command => "sh /usr/share/tomcat7/bin/shutdown.sh"
+  } ->
+
   # Get latest updates
-  #case $operatingsystem {
-  #  centos, redhat, fedora: { exec { "yum update": command => "yum -y update"}}
-  #  default: { exec { "yum update": command => "apt-get update;apt-get upgrade"}}
-  #}
-  #->
+  case $operatingsystem {
+    centos, redhat, fedora: { exec { "yum_update": command => "yum -y update"}}
+    default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade"}}
+  }
+  ->
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
@@ -87,24 +97,13 @@ define xnat::xnatapp (
     unless => "test -d $installer_dir/deployments/$instance_name"
   } ->
 
-  # Do database configuration (step 5)
-  exec { "postgresql-create-tables-and-views":
-    command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username > /home/xnat/psql.out'",
-    unless => "sh /etc/puppet/modules/xnat/tests/database_exists.sh"
-  } ->
-  
-  # Security settings (step 7)
-  exec { "store initial security settings":
-    command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true > security.out",
-    cwd => "$installer_dir/deployments/$instance_name",
-    unless => "sh /etc/puppet/modules/xnat/tests/database_exists.sh"
-  } ->
-
-  # Example sets (step 8)
-  exec { "optional: store example custom variable sets":
-    command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true > example.out",
-    cwd => "$installer_dir/deployments/$instance_name",
-    unless => "sh /etc/puppet/modules/xnat/tests/database_exists.sh"
+  # Step 5, 7 and 8 in separate file
+  # Otherwise unless does not work (syntax error) 
+  xnatapp::postgres{ "setup postgres database" :
+    system_user => $system_user,
+    instance_name => $instance_name,
+    installer_dir => $installer_dir,
+    db_username => $db_username
   } ->
 
   # Copy the generated war (step 9)

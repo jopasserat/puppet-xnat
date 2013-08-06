@@ -2,7 +2,7 @@
 class java {
   # Use wget with a special header to circumvent the license agreement approval
   exec { "download-jdk-7-21":
-    command => "wget -P /tmp/ -nc --no-cookies --header \"Cookie: gpw_e24=null;\" http://download.oracle.com/otn-pub/java/jdk/7u21-b11/jdk-7u21-linux-x64.tar.gz",
+    command => "wget -O /tmp/jdk-7u21-linux-x64.tar.gz -nc --no-check-certificate --no-cookies --header \"Cookie: gpw_e24=null;\" http://download.oracle.com/otn-pub/java/jdk/7u21-b11/jdk-7u21-linux-x64.tar.gz",
     unless => "test -d /usr/lib/jvm/jdk1.7.0_21"
   } ->
 

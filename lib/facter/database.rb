@@ -13,15 +13,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-Facter.add("ip_address") do
+# Get the JAVA_HOME environment variable path.
+
+Facter.add("database_exists") do
   setcode do
-    os_issue = `cat /etc/issue`    
-    if os_issue.include? "Fedora" or
-       os_issue.include? "Red Hat" or
-       os_issue.include? "CentOS" then
-      Facter::Util::Resolution.exec("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'")
-    else
-      Facter::Util::Resolution.exec("ifconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $2}'")
-    end
+    Facter::Util::Resolution.exec('sh /etc/puppet/modules/xnat/tests/database_exists.sh')
   end
 end
