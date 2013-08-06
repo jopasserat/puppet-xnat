@@ -110,5 +110,10 @@ define xnat::xnatapp (
   # Copy the generated war (step 9)
   exec {"deploy webapp":
     command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /usr/share/tomcat7/webapps/ && /usr/share/tomcat7/bin/shutdown.sh && /usr/share/tomcat7/bin/startup.sh"
+  } ->
+
+  # Start tomcat
+  exec {"start tomcat":
+    command => "sh /usr/share/tomcat7/bin/startup.sh"
   }
 }
