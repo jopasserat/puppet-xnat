@@ -21,13 +21,6 @@ define xnatapp::postgres (
 {
   unless $database_exists == 1 {
 
-    # Install plpgsql (required on some systems with Postgres < 9
-    # Have to do it manually, no existing function available
-    exec { "install_plpgsql":
-      command => "su postgres -c 'createlang -d xnat plpgsql'"
-    } ->
-
-
     # Do database configuration (step 5)
     exec { "create_tables":
       command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username > /home/xnat/psql.out'",
