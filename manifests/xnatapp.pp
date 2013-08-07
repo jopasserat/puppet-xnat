@@ -28,6 +28,7 @@ define xnat::xnatapp (
   require java
   require postgresql::server
   import "postgres"
+  import "plpgsql"
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat-builder"
@@ -36,13 +37,10 @@ define xnat::xnatapp (
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
-  exec { "test":
-    command => "echo $ip_address > ip.out"
-  } ->
-
   # Stop tomcat
   exec { "stop tomcat":
-    command => "sh /usr/share/tomcat7/bin/shutdown.sh"
+    command => "sh /usr/share/tomcat7/bin/shutdown.sh",
+    onlyif => "test -d /usr/share/tomcat7/bin/shutdown.sh"
   } ->
 
   # Get latest updates
@@ -77,13 +75,16 @@ define xnat::xnatapp (
     password => $db_userpassword
   } ->
 
+  xnatapp::plpgsql{ "install_plpgsql":
+  } ->
+
   # Set build properties (step 3)
   exec { "set xnat permissions":
     command => "chown -R xnat:xnat $installer_dir"
   } ->
 
   file { "$installer_dir/build.properties":
-    ensure => file,
+    ensure => present,
     content => template('xnat/build.properties.erb'),
     mode => '600'
   } ->
@@ -107,12 +108,7 @@ define xnat::xnatapp (
   } ->
 
   # Copy the generated war (step 9)
-  exec {"deploy webapp":
+  exec {"deploy_start_webapp":
     command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /usr/share/tomcat7/webapps/ && /usr/share/tomcat7/bin/shutdown.sh && /usr/share/tomcat7/bin/startup.sh"
-  } ->
-
-  # Start tomcat
-  exec {"start tomcat":
-    command => "sh /usr/share/tomcat7/bin/startup.sh"
   }
 }
