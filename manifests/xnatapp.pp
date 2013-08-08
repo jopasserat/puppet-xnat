@@ -44,11 +44,11 @@ define xnat::xnatapp (
   } ->
 
   # Get latest updates
-  case $operatingsystem {
-    centos, redhat, fedora: { exec { "yum_update": command => "yum -y update"}}
-    default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade"}}
-  }
-  ->
+  #case $operatingsystem {
+  #  centos, redhat, fedora: { exec { "yum_update": command => "yum -y update"}}
+  #  default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade"}}
+  #}
+  #->
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
