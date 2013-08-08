@@ -23,18 +23,18 @@ define xnatapp::postgres (
 
     # Do database configuration (step 5)
     exec { "create_tables":
-      command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username > /home/xnat/psql.out'",
+      command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username'",
     } ->
 
     # Security settings (step 7)
     exec { "store_security_settings":
-      command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true > security.out",
+      command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true",
       cwd => "$installer_dir/deployments/$instance_name",
     } ->
 
   # Example sets (step 8)
     exec { "store_example_sets":
-      command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true > example.out",
+      command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true",
       cwd => "$installer_dir/deployments/$instance_name",
     }
   }
