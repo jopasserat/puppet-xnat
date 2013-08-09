@@ -28,13 +28,14 @@ define xnatapp::postgres (
 
     # Security settings (step 7)
     exec { "store_security_settings":
-      command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true",
+      command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true > security.out",
       cwd => "$installer_dir/deployments/$instance_name",
     } ->
 
-  # Example sets (step 8)
+    # Example sets (step 8)
+    # Have to redirect output otherwise puppet sees it as an error
     exec { "store_example_sets":
-      command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true",
+      command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true > sets.out",
       cwd => "$installer_dir/deployments/$instance_name",
     }
   }

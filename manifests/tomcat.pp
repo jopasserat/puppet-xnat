@@ -9,6 +9,10 @@ class tomcat {
     command => "tar -xzf /tmp/apache-tomcat-7.0.42.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.42 /usr/share/tomcat7/",
     unless => "test -d /usr/share/tomcat7/"
   } ->
+
+  exec { "set permissions":
+    command => "chown -R tomcat:tomcat /usr/share/tomcat7/"
+  } ->
   
   file { "cleanup tomcat install":
     ensure => absent,

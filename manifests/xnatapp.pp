@@ -39,7 +39,7 @@ define xnat::xnatapp (
 
   # Stop tomcat
   exec { "stop tomcat":
-    command => "sh /usr/share/tomcat7/bin/shutdown.sh",
+    command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
     onlyif => "test -d /usr/share/tomcat7/bin/shutdown.sh"
   } ->
 
@@ -97,7 +97,7 @@ define xnat::xnatapp (
   exec { "xnat-setup":
     command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
-    environment => "JAVA_HOME=$java_home",
+    environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21/",
     timeout => 3600000,
     unless => "test -d $installer_dir/deployments/$instance_name"
   } ->
@@ -113,6 +113,6 @@ define xnat::xnatapp (
 
   # Copy the generated war (step 9)
   exec {"deploy_start_webapp":
-    command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /usr/share/tomcat7/webapps/ && /usr/share/tomcat7/bin/shutdown.sh && /usr/share/tomcat7/bin/startup.sh"
+    command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /usr/share/tomcat7/webapps/ && /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c 'sh /usr/share/tomcat7/bin/startup.sh'"
   }
 }
