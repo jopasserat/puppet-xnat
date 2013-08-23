@@ -52,7 +52,7 @@ define xnat::xnatapp (
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
-    command => "hg clone https://bitbucket.org/karchie/xnat_builder_tcia $installer_dir",
+    command => "hg clone https://bitbucket.org/evast/xnat_tcia_bigr $installer_dir",
     creates => $installer_dir,
     timeout => 3600000,
   } ->
