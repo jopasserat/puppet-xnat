@@ -18,6 +18,7 @@ Facter.add("ip_address") do
     os_issue = `cat /etc/issue`    
     if os_issue.include? "Fedora" or
        os_issue.include? "Red Hat" or
+	   os_issue.include? "Scientific" or
        os_issue.include? "CentOS" then
       Facter::Util::Resolution.exec("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'")
     else
