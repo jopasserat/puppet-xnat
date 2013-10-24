@@ -70,13 +70,13 @@ define xnat::xnatapp (
   notify { "installing xnat and pipeline complete": } ->
 
   # Add user with password (step 2.1)
-  postgresql::database_user { $db_username:
+  postgresql::server::role { $db_username:
     createrole => true,
     password_hash => $db_userpassword
   } ->
 
   # Configure the postgres db (step 2.2)
-  postgresql::db { $db_name:
+  postgresql::server::db { $db_name:
     user => $db_username,
     password => $db_userpassword
   } ->

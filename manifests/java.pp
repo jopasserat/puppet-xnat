@@ -7,7 +7,8 @@ class java {
   # approval
   exec { "download-jdk-7-21": 
     command => "wget -O /tmp/jdk-7u21-linux-x64.tar.gz -nc --no-check-certificate --no-cookies --header \"Cookie: gpw_e24=null;\" http://download.oracle.com/otn-pub/java/jdk/7u21-b11/jdk-7u21-linux-x64.tar.gz",
-    unless => "test -d /usr/lib/jvm/jdk1.7.0_21"
+    unless => "test -d /usr/lib/jvm/jdk1.7.0_21",
+    timeout => 1800000
   } ->
 
   # Extract the jdk to the jvm directory

@@ -5,7 +5,8 @@ class tomcat {
 
   exec { "download tomcat":
     command => "wget -P /tmp/ http://apache.mirror.1000mbps.com/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz",
-    unless => "test -d /usr/share/tomcat7/bin/"
+    unless => "test -d /usr/share/tomcat7/bin/",
+    timeout => 1800000
   } ->
   
   exec { "extract tomcat":
