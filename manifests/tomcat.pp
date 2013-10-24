@@ -1,5 +1,8 @@
 # Download and install tomcat
 class tomcat {
+
+  notify {"downloading and installing tomcat": } ->
+
   exec { "download tomcat":
     command => "wget -P /tmp/ http://apache.mirror.1000mbps.com/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz",
     unless => "test -d /usr/share/tomcat7/"
@@ -19,11 +22,15 @@ class tomcat {
     path => "/tmp/apache-tomcat-7.0.42.tar.gz"
   } ->
 
-  file { "testfile": 
+  file { "write setenv": 
     path => "/usr/share/tomcat7/bin/setenv.sh",
     ensure => present,
     #content => "export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21\nexport JAVA_OPTS=\"-Xms512m -Xmx1024m\"",
     content => template("xnat/setenv.sh.erb"),
     mode => '600'
-  }
+  } ->
+
+  notify {"installing tomcat complete": }
+
 }
+

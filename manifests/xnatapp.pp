@@ -50,9 +50,7 @@ define xnat::xnatapp (
   #}
   #->
 
-  exec { "echo-update-merc-xnat-tcia":
-    command => "downloading xnat tcia"
-  } ->
+  notify { "downloading xnat tcia": } ->
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
@@ -61,15 +59,15 @@ define xnat::xnatapp (
     timeout => 3600000,
   } ->
 
-  exec { "echo-update-merc-xnat-pipeline":
-    command => "downloading xnat pipeline"
-  } ->
+  notify { "downloading xnat pipeline": } ->
 
   exec { "mercurial-clone-xnat-pipeline":
     command => "hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pipeline",
     creates => "$installer_dir/pipeline",
     timeout => 3600000,
   } ->
+
+  notify { "installing xnat and pipeline complete": } ->
 
   # Add user with password (step 2.1)
   postgresql::database_user { $db_username:
