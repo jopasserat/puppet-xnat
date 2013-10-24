@@ -50,11 +50,19 @@ define xnat::xnatapp (
   #}
   #->
 
+  exec { "echo-update-merc-xnat-tcia":
+    command => "downloading xnat tcia"
+  } ->
+
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
     command => "hg clone https://bitbucket.org/evast/xnat_tcia_bigr $installer_dir",
     creates => $installer_dir,
     timeout => 3600000,
+  } ->
+
+  exec { "echo-update-merc-xnat-pipeline":
+    command => "downloading xnat pipeline"
   } ->
 
   exec { "mercurial-clone-xnat-pipeline":
