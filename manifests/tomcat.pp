@@ -4,13 +4,13 @@ class tomcat {
   notify {"downloading and installing tomcat": } ->
 
   exec { "download tomcat":
-    command => "wget -P /tmp/ http://apache.mirror.1000mbps.com/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz",
+    command => "wget -P /tmp/ http://apache.mirror.1000mbps.com/tomcat/tomcat-7/v7.0.47/bin/apache-tomcat-7.0.47.tar.gz",
     unless => "test -d /usr/share/tomcat7/bin/",
     timeout => 1800000
   } ->
   
   exec { "extract tomcat":
-    command => "tar -xzf /tmp/apache-tomcat-7.0.42.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.42 /usr/share/tomcat7/",
+    command => "tar -xzf /tmp/apache-tomcat-7.0.42.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.47 /usr/share/tomcat7/",
     unless => "test -d /usr/share/tomcat7/bin/"
   } ->
 
@@ -20,7 +20,7 @@ class tomcat {
   
   file { "cleanup tomcat install":
     ensure => absent,
-    path => "/tmp/apache-tomcat-7.0.42.tar.gz"
+    path => "/tmp/apache-tomcat-7.0.47.tar.gz"
   } ->
 
   file { "write setenv": 
