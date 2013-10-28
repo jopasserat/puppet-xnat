@@ -10,7 +10,7 @@ class tomcat {
   } ->
   
   exec { "extract tomcat":
-    command => "tar -xzf /tmp/apache-tomcat-7.0.42.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.47 /usr/share/tomcat7/",
+    command => "tar -xzf /tmp/apache-tomcat-7.0.47.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.47 /usr/share/tomcat7/",
     unless => "test -d /usr/share/tomcat7/bin/"
   } ->
 
