@@ -15,33 +15,40 @@
 
 # Download and install tomcat
 class tomcat {
+  include wget
+
+  $apache_major_version = "7"
+  $apache_full_version = "7.0.54"
 
   notify {"downloading and installing tomcat": } ->
 
-  exec { "download tomcat":
-    command => "wget -P /tmp/ http://apache.mirror.1000mbps.com/tomcat/tomcat-7/v7.0.54/bin/apache-tomcat-7.0.54.tar.gz",
-    unless => "test -d /usr/share/tomcat7/bin/",
-    timeout => 1800000
-  } ->
-  
-  exec { "extract tomcat":
-    command => "tar -xzf /tmp/apache-tomcat-7.0.54.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-7.0.54 /usr/share/tomcat7/",
-    unless => "test -d /usr/share/tomcat7/bin/"
+  wget::fetch { "download tomcat":
+    source => "http://apache.mirror.1000mbps.com/tomcat/tomcat-${apache_major_version}/v${apache_full_version}/bin/apache-tomcat-${apache_full_version}.tar.gz",
+    destination => "/tmp/apache-tomcat-${apache_full_version}.tar.gz",
+    timeout => 3600,
+    verbose => false
   } ->
 
-  exec { "set permissions":
-    command => "chown -R tomcat:tomcat /usr/share/tomcat7/"
+  exec { "extract tomcat":
+    command => "tar -xzf /tmp/apache-tomcat-${apache_full_version}.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-${apache_full_version} /usr/share/tomcat${apache_major_version}/",
+    unless => "test -d /usr/share/tomcat${apache_major_version}/bin/"
+  } ->
+
+  file { "/usr/share/tomcat${apache_major_version}/":
+    owner => "tomcat",
+    group => "tomcat",
+    mode => 0644,
+    recurse => true
   } ->
   
   file { "cleanup tomcat install":
     ensure => absent,
-    path => "/tmp/apache-tomcat-7.0.54.tar.gz"
+    path => "/tmp/apache-tomcat-${apache_full_version}.tar.gz"
   } ->
 
   file { "write setenv": 
-    path => "/usr/share/tomcat7/bin/setenv.sh",
+    path => "/usr/share/tomcat${apache_major_version}/bin/setenv.sh",
     ensure => present,
-    #content => "export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21\nexport JAVA_OPTS=\"-Xms512m -Xmx1024m\"",
     content => template("xnat/setenv.sh.erb"),
     mode => '600'
   } ->
@@ -49,4 +56,3 @@ class tomcat {
   notify {"installing tomcat complete": }
 
 }
-
