@@ -15,42 +15,46 @@
 
 # installs sun (JDK) java
 class java {
+  $java_major_version = "7"
+  $java_minor_version = "60"
+  $java_b_version = "19"
+  $java_short_version = "${java_major_version}u${java_minor_version}"
+  $java_long_version = "jdk1.${java_major_version}.0_${java_minor_version}"
 
   notify{"downloading and installing java": } ->
 
-  # Use wget with a special header to circumvent the license agreement 
-  # approval
-  exec { "download-jdk-7-21": 
-    command => "wget -O /tmp/jdk-7u21-linux-x64.tar.gz -nc --no-check-certificate --no-cookies --header \"Cookie: oraclelicense=accept-securebackup-cookie;\" http://download.oracle.com/otn-pub/java/jdk/7u21-b11/jdk-7u21-linux-x64.tar.gz",
-    unless => "test -d /usr/lib/jvm/jdk1.7.0_21",
-    timeout => 1800000
+  # Use wget with a special header to circumvent the license agreement approval
+  exec { "download-jdk-${java_short_version}": 
+    command => "wget -O /tmp/jdk-${java_short_version}-linux-x64.tar.gz -nc --no-check-certificate --no-cookies --header \"Cookie: oraclelicense=accept-securebackup-cookie;\" http://download.oracle.com/otn-pub/java/jdk/${java_short_version}-b${java_b_version}/jdk-${java_short_version}-linux-x64.tar.gz",
+    unless => "test -d /usr/lib/jvm/${java_long_version}",
+    timeout => 3600
   } ->
 
   # Extract the jdk to the jvm directory
-  exec { "extract-jdk-7-21": #file permissions incorrect
-    command => "tar -zxvf /tmp/jdk-7u21-linux-x64.tar.gz -C /usr/lib/jvm/",
-    unless => "test -d /usr/lib/jvm/jdk1.7.0_21"
+  exec { "extract-jdk-${java_short_version}":
+    command => "tar -zxvf /tmp/jdk-${java_short_version}-linux-x64.tar.gz -C /usr/lib/jvm/",
+    unless => "test -d /usr/lib/jvm/${java_long_version}"
   } ->
 
   # Remove the download file
   file { "cleanup java install":
     ensure => absent,
-    path => "/tmp/jdk-7u21-linux-x64.tar.gz"
+    path => "/tmp/jdk-${java_short_version}-linux-x64.tar.gz"
   } ->
 
   # Set correct Java version
   case $operatingsystem {
     centos, redhat, fedora: {
       exec { "update-java-alternatives set sun jdk":
-        command => "alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.7.0_21/jre/bin/java 20000;\
-                alternatives --install /usr/bin/javaws javaws /usr/lib/jvm/jdk1.7.0_21/jre/bin/javaws 20000;\
-                alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.7.0_21/jre/bin/javac 20000;\
-                alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.7.0_21/jre/bin/jar 20000;"
+        command => "alternatives --install /usr/bin/java java /usr/lib/jvm/${java_long_version}/jre/bin/java 20000;\
+                alternatives --install /usr/bin/javaws javaws /usr/lib/jvm/${java_long_version}/jre/bin/javaws 20000;\
+                alternatives --install /usr/bin/javac javac /usr/lib/jvm/${java_long_version}/jre/bin/javac 20000;\
+                alternatives --install /usr/bin/jar jar /usr/lib/jvm/${java_long_version}/jre/bin/jar 20000;"
       }
    }
    default: {
       exec { "update-alternatives install sun jdk":
-        command => "cat /usr/lib/jvm/.jdk1.7.0_21.jinfo | grep -E '^(jre|jdk)' | awk '{print \"/usr/bin/\" \$2 \" \" \$2 \" \" \$3 \" 30 \r \"}' | xargs -t -n4 update-alternatives --verbose --install"
+        command => "cat /usr/lib/jvm/.${java_long_version}.jinfo | grep -E '^(jre|jdk)' | awk '{print \"/usr/bin/\" \$2 \" \" \$2 \" \" \$3 \" 30 \r \"}' | xargs -t -n4 update-alternatives --verbose --install"
       }
     }
   } ->
