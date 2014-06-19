@@ -20,39 +20,48 @@ class tomcat {
   $apache_major_version = "7"
   $apache_full_version = "7.0.54"
 
-  notify {"downloading and installing tomcat": } ->
+  if $tomcat_exists == 'true' {
+    notify {"tomcat already installed": }
 
-  wget::fetch { "download tomcat":
-    source => "http://apache.mirror.1000mbps.com/tomcat/tomcat-${apache_major_version}/v${apache_full_version}/bin/apache-tomcat-${apache_full_version}.tar.gz",
-    destination => "/tmp/apache-tomcat-${apache_full_version}.tar.gz",
-    timeout => 3600,
-    verbose => false
-  } ->
+  } else {
+    notify {"downloading and installing tomcat": } ->
 
-  exec { "extract tomcat":
-    command => "tar -xzf /tmp/apache-tomcat-${apache_full_version}.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-${apache_full_version} /usr/share/tomcat${apache_major_version}/",
-    unless => "test -d /usr/share/tomcat${apache_major_version}/bin/"
-  } ->
+    wget::fetch { "download tomcat":
+      source => "http://apache.mirror.1000mbps.com/tomcat/tomcat-${apache_major_version}/v${apache_full_version}/bin/apache-tomcat-${apache_full_version}.tar.gz",
+      destination => "/tmp/apache-tomcat-${apache_full_version}.tar.gz",
+      timeout => 3600,
+      verbose => false,
+    } ->
 
-  file { "/usr/share/tomcat${apache_major_version}/":
-    owner => "tomcat",
-    group => "tomcat",
-    mode => 0644,
-    recurse => true
-  } ->
+    exec { "extract tomcat":
+      command => "tar -xzf /tmp/apache-tomcat-${apache_full_version}.tar.gz -C /usr/share/;mv /usr/share/apache-tomcat-${apache_full_version} /usr/share/tomcat${apache_major_version}/",
+      unless => "test -d /usr/share/tomcat${apache_major_version}/bin/"
+    } ->
+
+    file { "/usr/share/tomcat${apache_major_version}/":
+      owner => "tomcat",
+      group => "tomcat",
+      mode => 0644,
+      recurse => true
+    } ->
   
-  file { "cleanup tomcat install":
-    ensure => absent,
-    path => "/tmp/apache-tomcat-${apache_full_version}.tar.gz"
-  } ->
+    file { "cleanup tomcat install":
+      ensure => absent,
+      path => "/tmp/apache-tomcat-${apache_full_version}.tar.gz"
+    } ->
 
-  file { "write setenv": 
-    path => "/usr/share/tomcat${apache_major_version}/bin/setenv.sh",
-    ensure => present,
-    content => template("xnat/setenv.sh.erb"),
-    mode => '600'
-  } ->
+    file { "write setenv": 
+      path => "/usr/share/tomcat${apache_major_version}/bin/setenv.sh",
+      ensure => present,
+      content => template("xnat/setenv.sh.erb"),
+      mode => '644'
+    } ->
 
-  notify {"installing tomcat complete": }
+    file { "set tomcat execute permissions":
+      path => "/usr/share/tomcat${apache_major_version}/bin/",
+      mode => '644'
+    } ->
 
+    notify {"installing tomcat complete": }
+  }
 }

@@ -14,25 +14,22 @@
 # under the License.
 
 define xnat::xnatapp (
-  $db_name = "xnat",
-  $db_username = "xnat",
+  $db_name,
+  $db_username,
   $db_userpassword,
-  $archive_root = "/data/XNAT",
-  $xnat_url = "http://localhost:8080/xnat-web-app-1",
-  $xnat_port = "8080",
-  $system_user = "xnat",
-  $instance_name = "xnat-web-app-1", # add tomcat dir, puppet dir
+  $system_user,
+  $instance_name, # add tomcat dir, puppet dir
+  $archive_root,  # for build.properties.erb
 )
 {
   require tomcat
   require java
   require postgresql::server
-  import "postgres"
-  import "plpgsql"
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat-builder"
   $download_dir = "/home/$system_user/downloads"
+  $xnat_url = "http://${ip_address}:8080/xnat-web-app-1"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
@@ -44,44 +41,35 @@ define xnat::xnatapp (
   } ->
 
   # Get latest updates
-  #case $operatingsystem {
-  #  centos, redhat, fedora: { exec { "yum_update": command => "yum -y update"}}
-  #  default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade"}}
-  #}
-  #->
+  case $operatingsystem {
+    scientific, centos, redhat, fedora: { exec { "yum_update": command => "yum -y update"}}
+    default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade"}}
+  }
+  ->
 
-  notify { "downloading xnat tcia": } ->
+  notify { "downloading XNAT ...": } ->
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
   exec { "mercurial-clone-xnatbuilder":
-    command => "hg clone https://bitbucket.org/evast/xnat_tcia_bigr $installer_dir",
+    command => "hg clone http://hg.xnat.org/xnat_builder_1_6dev $installer_dir",
     creates => $installer_dir,
-    timeout => 3600000,
+    timeout => 7200,
   } ->
 
-  notify { "downloading xnat pipeline": } ->
+  notify { "downloading XNAT pipeline ...": } ->
 
   exec { "mercurial-clone-xnat-pipeline":
     command => "hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pipeline",
     creates => "$installer_dir/pipeline",
-    timeout => 3600000,
+    timeout => 7200,
   } ->
 
-  notify { "installing xnat and pipeline complete": } ->
+  notify { "downloading XNAT and pipeline complete": } ->
 
-  # Add user with password (step 2.1)
-  postgresql::server::role { $db_username:
-    createrole => true,
-    password_hash => $db_userpassword
-  } ->
-
-  # Configure the postgres db (step 2.2)
-  postgresql::server::db { $db_name:
-    user => $db_username,
-    password => $db_userpassword
-  } ->
-
-  xnatapp::plpgsql{ "install_plpgsql":
+  init_database{ "run" :
+    db_username => $db_username,
+    db_userpassword => $db_userpassword,
+    db_name => $db_name
   } ->
 
   # Set build properties (step 3)
@@ -99,26 +87,33 @@ define xnat::xnatapp (
     mode => '600'
   } ->
 
+  notify { "building XNAT ...": } ->
+
   # Run XNAT install script (step 4)
   exec { "xnat-setup":
     command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
-    environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21/",
+    #environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21/",
     timeout => 3600000,
     unless => "test -d $installer_dir/deployments/$instance_name"
   } ->
 
-  # Step 5, 7 and 8 in separate file
-  # Otherwise unless does not work (syntax error) 
-  xnatapp::postgres{ "setup postgres database" :
+  # Initialize database for XNAT
+  fill_database{ "setup postgres database" :
     system_user => $system_user,
     instance_name => $instance_name,
     installer_dir => $installer_dir,
     db_username => $db_username
   } ->
 
-  # Copy the generated war (step 9)
-  exec {"deploy_start_webapp":
-    command => "cp $installer_dir/deployments/$instance_name/target/$instance_name.war /usr/share/tomcat7/webapps/ && /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c 'sh /usr/share/tomcat7/bin/startup.sh'"
+  # Copy the generated war
+  file {"$tomcat_root/webapps/$instance_name.war":
+    ensure => present,
+    source => "$installer_dir/deployments/$instance_name/target/$instance_name.war"
+  } ->
+
+  exec {"stop and start tomcat":
+    command => "su tomcat -c /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c '/usr/share/tomcat7/bin/startup.sh'",
+    cwd => "$tomcat_root/logs"
   }
 }

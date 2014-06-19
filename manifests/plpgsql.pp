@@ -13,7 +13,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-define xnatapp::plpgsql () {
+define plpgsql () {
   unless $database_exists == 1 {
 
     # Install plpgsql (required on some systems with Postgres < 9

@@ -1,4 +1,4 @@
-# Licensed to Biomedical Imaging Group Rotterdam under one or more contributor 
+# Licensed to Biomedical Imaging Group Rotterdam under one or more contributor
 # license agreements. Biomedical Imaging Group Rotterdam licenses this file
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
@@ -13,5 +13,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_60
-export JAVA_OPTS="-Xms1024m -Xmx6144m"
+define xnat::init_database (
+  $db_username,
+  $db_userpassword,
+  $db_name)
+{
+  # Add user with password
+  postgresql::server::role { $db_username:
+    createrole => true,
+    password_hash => $db_userpassword
+  } ->
+
+  # Configure the postgres db
+  postgresql::server::db { $db_name:
+    user => $db_username,
+    password => $db_userpassword
+  } ->
+
+  # Install plpgsql language
+  plpgsql{ "install_plpgsql":
+  }
+}

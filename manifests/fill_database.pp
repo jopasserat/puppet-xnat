@@ -13,26 +13,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-define xnatapp::postgres (
+define xnat::fill_database (
   $system_user, 
   $installer_dir,
   $instance_name,
   $db_username)
 {
-  unless $database_exists == 1 {
+  if $database_exists == 1 {
+    notify {"postgresql database already configured": }
 
-    # Do database configuration (step 5)
+  } else {
+    notify {"configuring postgresql database": } ->    
+
+    # Do database configuration
     exec { "create_tables":
-      command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username'",
+      command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username'"
     } ->
 
-    # Security settings (step 7)
+    notify { "$installer_dir/deployments/$instance_name": } ->
+
+    # Set security settings
     exec { "store_security_settings":
       command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true > security.out",
-      cwd => "$installer_dir/deployments/$instance_name",
+      cwd => "$installer_dir/deployments/$instance_name"
     } ->
 
-    # Example sets (step 8)
+    # Set example datasets
     # Have to redirect output otherwise puppet sees it as an error
     exec { "store_example_sets":
       command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true > sets.out",
