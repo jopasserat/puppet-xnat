@@ -30,8 +30,6 @@ define xnat::fill_database (
       command => "su xnat -c 'psql -d $system_user -f $installer_dir/deployments/$instance_name/sql/$instance_name.sql -U $db_username'"
     } ->
 
-    notify { "$installer_dir/deployments/$instance_name": } ->
-
     # Set security settings
     exec { "store_security_settings":
       command => "$installer_dir/bin/StoreXML -project $instance_name -l security/security.xml -allowDataDeletion true > security.out",
@@ -42,7 +40,7 @@ define xnat::fill_database (
     # Have to redirect output otherwise puppet sees it as an error
     exec { "store_example_sets":
       command => "$installer_dir/bin/StoreXML -dir ./work/field_groups -u admin -p admin -allowDataDeletion true > sets.out",
-      cwd => "$installer_dir/deployments/$instance_name",
+      cwd => "$installer_dir/deployments/$instance_name"
     }
   }
 }

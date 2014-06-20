@@ -18,7 +18,7 @@ define xnat::xnatapp (
   $db_username,
   $db_userpassword,
   $system_user,
-  $instance_name, # add tomcat dir, puppet dir
+  $instance_name,
   $archive_root,  # for build.properties.erb
 )
 {
@@ -28,7 +28,6 @@ define xnat::xnatapp (
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat-builder"
-  $download_dir = "/home/$system_user/downloads"
   $xnat_url = "http://${ip_address}:8080/xnat-web-app-1"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
@@ -89,7 +88,7 @@ define xnat::xnatapp (
 
   notify { "building XNAT ...": } ->
 
-  # Run XNAT install script (step 4)
+  # Run XNAT install script
   exec { "xnat-setup":
     command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
