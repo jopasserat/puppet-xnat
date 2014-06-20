@@ -16,7 +16,7 @@ Installation instruction (some steps may not be required on existing systems)
    - Fedora: sudo yum install puppet
    - Ubuntu: sudo apt-get install puppet
    - RedHat: 
-     - sudo rpm -ivh http://yum.puppetlabs.com/el/6/products/i386/puppetlabs-release-6-7.noarch.rpm
+     - sudo rpm -ivh http://yum.puppetlabs.com/el/6/products/i386/puppetlabs-release-6-10.noarch.rpm
      - Replace the 6’s with 5’s if that is the installed RedHat version. Replace i386 with x86_64 for systems with a 64-bit instruction set.
      - Install puppet: yum install puppet (confirm any required keys)
  - Install other packages: yum install wget git mercurial (confirm any required keys)
