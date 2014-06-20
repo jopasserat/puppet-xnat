@@ -20,9 +20,10 @@ define xnat::xnatapp (
   $system_user,
   $instance_name,
   $archive_root,  # for build.properties.erb
+  $tomcat_web_user,
+  $tomcat_web_password
 )
 {
-  require tomcat
   require java
   require postgresql::server
 
@@ -38,6 +39,11 @@ define xnat::xnatapp (
     command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
     onlyif => "test -d /usr/share/tomcat7/bin/shutdown.sh"
   } ->
+
+  tomcat { "install tomcat": 
+    tomcat_web_user => $tomcat_web_user,
+    tomcat_web_password => $tomcat_web_password
+  } -> 
 
   # Get latest updates
   case $operatingsystem {

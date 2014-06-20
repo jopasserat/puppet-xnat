@@ -14,7 +14,10 @@
 # under the License.
 
 # Download and install tomcat
-class tomcat {
+define tomcat (
+  $tomcat_web_user,
+  $tomcat_web_password)
+{
   include wget
 
   $apache_major_version = "7"
@@ -44,6 +47,11 @@ class tomcat {
       mode => 0644,
       recurse => true
     } ->
+
+    file { "set tomcat execute permissions":
+      path => "/usr/share/tomcat${apache_major_version}/bin/",
+      mode => '644'
+    } ->
   
     file { "cleanup tomcat install":
       ensure => absent,
@@ -57,8 +65,10 @@ class tomcat {
       mode => '644'
     } ->
 
-    file { "set tomcat execute permissions":
-      path => "/usr/share/tomcat${apache_major_version}/bin/",
+    file { "write tomcat-users":
+      path => "/usr/share/tomcat${apache_major_version}/conf/tomcat-users.xml",
+      ensure => present,
+      content => template("xnat/tomcat-users.xml.erb"),
       mode => '644'
     } ->
 

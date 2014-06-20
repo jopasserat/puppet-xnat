@@ -19,5 +19,7 @@ xnat::xnatapp { 'xnat-web-app-1':
   db_userpassword => "blaat123",
   system_user => "xnat",
   instance_name => "xnat-web-app-1",
-  archive_root => "/xnatdata"
+  archive_root => "/xnatdata",
+  tomcat_web_user => "evast",
+  tomcat_web_password => "test123"
 }
