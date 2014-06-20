@@ -98,7 +98,7 @@ define xnat::xnatapp (
   exec { "xnat-setup":
     command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
-    #environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21/",
+    environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_60/",
     timeout => 3600000,
     unless => "test -d $installer_dir/deployments/$instance_name"
   } ->
