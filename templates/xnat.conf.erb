@@ -1,0 +1,12 @@
+NameVirtualHost *:80 
+
+<VirtualHost *:80>
+  ServerName <%= @ip_address %>
+  ServerAlias <%= @ip_address %>
+  ServerAdmin <%= @apache_mail_address %>
+  ErrorLog /var/log/httpd/<%= @instance_name %>.log
+  CustomLog /var/log/httpd/<%= @instance_name %>.log combined
+
+  ProxyPass / ajp://localhost:8009/
+  ProxyPassReverse / ajp://localhost:8009/
+</VirtualHost>

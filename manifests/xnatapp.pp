@@ -21,7 +21,8 @@ define xnat::xnatapp (
   $instance_name,
   $archive_root,  # for build.properties.erb
   $tomcat_web_user,
-  $tomcat_web_password
+  $tomcat_web_password,
+  $apache_mail_address
 )
 {
   require java
@@ -29,7 +30,7 @@ define xnat::xnatapp (
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
-  $xnat_url = "http://${ip_address}:8080/xnat"
+  $xnat_url = "http://${ip_address}/"
   $xnat_version = '1.6.3'
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
@@ -62,7 +63,7 @@ define xnat::xnatapp (
     extension => 'tar.gz',
     checksum => true,
     src_target => '/tmp',
-    timeout => 7200,
+    timeout => 7200
   } ->
 
   # Clone the xnat builder dev branch, create files and set permissions (step 1)
@@ -122,6 +123,11 @@ define xnat::xnatapp (
     db_username => $db_username
   } ->
 
+  exec { "move old tomcat ROOT folder": 
+    command => "mv /usr/share/tomcat7/webapps/ROOT /usr/share/tomcat7/webapps/tomcat",
+    unless => "test -d /usr/share/tomcat7/webapps/tomcat"
+  } ->
+
   # Copy the generated war
   file {"$tomcat_root/webapps/$instance_name.war":
     ensure => present,
@@ -131,5 +137,9 @@ define xnat::xnatapp (
   exec {"stop and start tomcat":
     command => "su tomcat -c /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c '/usr/share/tomcat7/bin/startup.sh'",
     cwd => "$tomcat_root/logs"
+  } ->
+
+  init_apache { "initialize apache proxy":
+    apache_mail_address => $apache_mail_address
   }
 }

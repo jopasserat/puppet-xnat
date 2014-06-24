@@ -13,14 +13,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
-xnat::xnatapp { 'xnat-web-app-1':
-  db_name => "xnat",
-  db_username => "xnat",
-  db_userpassword => "test123",
-  system_user => "xnat",
-  instance_name => "ROOT",
-  archive_root => "/xnatdata",
-  tomcat_web_user => "evast",
-  tomcat_web_password => "test123",
-  apache_mail_address => "xnat@localhost"
+define init_apache (
+  $apache_mail_address
+)
+{
+  require apache
+  require apache::mod::proxy
+  require apache::mod::proxy_ajp
+
+  file { "write apache conf":
+    path => "/etc/httpd/conf.d/xnat.conf",
+    ensure => present,
+    content => template("xnat/xnat.conf.erb"),
+    mode => '644',
+  } ->
+
+  # restart httpd (apache service enable does not restart)
+  exec { "restart httpd":
+    command => "service httpd restart"
+  }
 }
