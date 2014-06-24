@@ -18,16 +18,24 @@ define xnat::init_database (
   $db_userpassword,
   $db_name)
 {
+  require xnat_tablespace
+
   # Add user with password
   postgresql::server::role { $db_username:
     createrole => true,
     password_hash => $db_userpassword
   } ->
 
+  # Add tablespace
+  postgresql::server::tablespace { "tablespace1235":
+    location => "/xnatdata/database",
+  } ->
+
   # Configure the postgres db
   postgresql::server::db { $db_name:
     user => $db_username,
-    password => $db_userpassword
+    password => $db_userpassword,
+    tablespace => "tablespace1235",
   } ->
 
   # Install plpgsql language
