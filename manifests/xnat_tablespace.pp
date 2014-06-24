@@ -13,8 +13,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Sets the seltype for SELinux support to set
-# postgres tablespace in another directory than default
+# Sets the seltype for SELinux support to make it possible to
+# store the postgres tablespace in another directory than default.
+# The file function identified by $tablespace_dir is
+# overwritten from the existing tablespace definition/class.
 class xnat_tablespace ($tablespace_dir) inherits postgresql::server {
   File <| title == $tablespace_dir |> {
     seltype => "postgresql_db_t",
