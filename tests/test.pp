@@ -25,6 +25,7 @@ xnat::xnatapp { 'xnat-web-app-1':
   apache_mail_address => "xnat@localhost",
   xnat_version => "1.6.3",
   java_opts => "-Xms1024m -Xmx6144m -XX:MaxPermSize=256m",
+  catalina_tmp_dir => "/xnatdata/temp",
   mail_server => "localhost",
   mail_port => 25,
   mail_username => "mailuser",

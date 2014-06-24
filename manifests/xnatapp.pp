@@ -25,6 +25,7 @@ define xnat::xnatapp (
   $apache_mail_address,
   $xnat_version,
   $java_opts,
+  $catalina_tmp_dir,
   $mail_server,
   $mail_port,
   $mail_username,
