@@ -15,8 +15,8 @@
 
 # Sets the seltype for SELinux support to set
 # postgres tablespace in another directory than default
-class xnat_tablespace inherits postgresql::server {
-  File <| title == "/xnatdata/database" |> {
+class xnat_tablespace ($tablespace_dir) inherits postgresql::server {
+  File <| title == $tablespace_dir |> {
     seltype => "postgresql_db_t",
   }
 }

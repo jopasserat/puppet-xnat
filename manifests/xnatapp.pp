@@ -31,7 +31,8 @@ define xnat::xnatapp (
   $mail_username,
   $mail_password,
   $mail_admin,
-  $mail_subject
+  $mail_subject,
+  $tablespace_dir
 )
 {
   require java
@@ -69,7 +70,8 @@ define xnat::xnatapp (
   init_database{ "run" :
     db_username => $db_username,
     db_userpassword => $db_userpassword,
-    db_name => $db_name
+    db_name => $db_name,
+    tablespace_dir => $tablespace_dir
   } ->
 
   exec { "set xnat permissions":

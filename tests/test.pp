@@ -31,5 +31,6 @@ xnat::xnatapp { 'xnat-web-app-1':
   mail_username => "mailuser",
   mail_password => "mailpass",
   mail_admin => "admin@localhost",
-  mail_subject => "XNAT"
+  mail_subject => "XNAT",
+  tablespace_dir => "/xnatdata/database" # Also update makedirs.sh
 }
