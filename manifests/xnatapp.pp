@@ -51,37 +51,12 @@ define xnat::xnatapp (
   case $operatingsystem {
     scientific, centos, redhat, fedora: { exec { "yum_update": command => "yum -y update", timeout => 3600}}
     default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade", timeout => 3600}}
-  }
-  ->
-
-  notify { "downloading XNAT ...": } ->
-
-  archive { "xnat-$xnat_version":
-    ensure => present,
-    url => "ftp://ftp.nrg.wustl.edu/pub/xnat/xnat-$xnat_version.tar.gz",
-    target => "/home/xnat",
-    extension => 'tar.gz',
-    checksum => true,
-    src_target => '/tmp',
-    timeout => 7200
   } ->
 
-  # Clone the xnat builder dev branch, create files and set permissions (step 1)
-  #exec { "mercurial-clone-xnatbuilder":
-  #  command => "hg clone http://hg.xnat.org/xnat_builder_1_6dev $installer_dir",
-  #  creates => $installer_dir,
-  #  timeout => 7200,
-  #} ->
-
-  #notify { "downloading XNAT pipeline ...": } ->
-
-  #exec { "mercurial-clone-xnat-pipeline":
-  #  command => "hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pipeline",
-  #  creates => "$installer_dir/pipeline",
-  #  timeout => 7200,
-  #} ->
-
-  notify { "downloading XNAT and pipeline complete": } ->
+  download_xnat{ "download xnat" :
+    xnat_version => $xnat_version,
+    installer_dir => $installer_dir
+  } ->
 
   init_database{ "run" :
     db_username => $db_username,
