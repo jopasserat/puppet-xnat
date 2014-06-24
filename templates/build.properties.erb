@@ -57,19 +57,19 @@ xdat.build.location=<%= @archive_root %>/build
 # Mail server, port, and protocol. Standard SMTP port is 25 or 587, Google SMTPS port is 465. See the
 # sample configuration files in plugin-resources/conf for examples in how to set up SMTPS servers, as well
 # as encrypted mail service credentials.
-xdat.mail.server=mail.server
-xdat.mail.port=25
+xdat.mail.server=<%= @mail_server %>
+xdat.mail.port=<%= @mail_port %>
 xdat.mail.protocol=smtp
 
 # Mail server credentials. These values are only required for mail servers with authentication turned on.
-xdat.mail.username=
-xdat.mail.password=
+xdat.mail.username=<%= @mail_username %>
+xdat.mail.password=<%= @mail_password %>
 
 # The email address for the XNAT system administrator.
-xdat.mail.admin=administrator@xnat.org
+xdat.mail.admin=<%= @mail_admin %>
 
 # Prefix to the subject line for system emails.
-xdat.mail.prefix=XNAT
+xdat.mail.prefix=<%= @mail_subject %>
 
 # The URL for your XNAT server installation, e.g. http://localhost:8080/xnat
 xdat.url=<%= @xnat_url %>

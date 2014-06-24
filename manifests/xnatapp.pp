@@ -22,7 +22,15 @@ define xnat::xnatapp (
   $archive_root,  # for build.properties.erb
   $tomcat_web_user,
   $tomcat_web_password,
-  $apache_mail_address
+  $apache_mail_address,
+  $xnat_version,
+  $java_opts,
+  $mail_server,
+  $mail_port,
+  $mail_username,
+  $mail_password,
+  $mail_admin,
+  $mail_subject
 )
 {
   require java
@@ -31,7 +39,6 @@ define xnat::xnatapp (
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
   $xnat_url = "http://${ip_address}/"
-  $xnat_version = '1.6.3'
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
@@ -39,7 +46,7 @@ define xnat::xnatapp (
   # Stop tomcat
   exec { "stop tomcat":
     command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
-    onlyif => "test -d /usr/share/tomcat7/bin/shutdown.sh"
+    onlyif => "test -e /usr/share/tomcat7/bin/shutdown.sh"
   } ->
 
   tomcat { "install tomcat": 
@@ -64,12 +71,11 @@ define xnat::xnatapp (
     db_name => $db_name
   } ->
 
-  # Set build properties (step 3)
   exec { "set xnat permissions":
     command => "chown -R xnat:xnat $installer_dir"
   } ->
 
-  exec {"make_directories":
+  exec {"make xnat storage directories":
     command => "sh /etc/puppet/modules/xnat/tests/makedirs.sh"
   } ->
 
