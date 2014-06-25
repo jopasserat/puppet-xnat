@@ -67,6 +67,10 @@ define xnat::xnatapp (
     installer_dir => $installer_dir
   } ->
 
+  exec {"make xnat storage directories":
+    command => "sh /etc/puppet/modules/xnat/tests/makedirs.sh"
+  } ->
+
   init_database{ "run" :
     db_username => $db_username,
     db_userpassword => $db_userpassword,
@@ -76,10 +80,6 @@ define xnat::xnatapp (
 
   exec { "set xnat permissions":
     command => "chown -R xnat:xnat $installer_dir"
-  } ->
-
-  exec {"make xnat storage directories":
-    command => "sh /etc/puppet/modules/xnat/tests/makedirs.sh"
   } ->
 
   file { "$installer_dir/build.properties":

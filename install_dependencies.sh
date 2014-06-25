@@ -1,4 +1,5 @@
 puppet module install jgoettsch/mercurial
+puppet module install puppetlabs/apache
 puppet module install puppetlabs/postgresql
 puppet module install maestrodev/wget
 git clone https://github.com/glarizza/puppet-pick.git pick
