@@ -43,6 +43,7 @@ Notes:
  - The XNAT installation can be run with SELinux Enabled. The script has been adapted and tested to run with SELinux.
  - Depending on the OS, apache may be installed as apache, apache2, apache22 or httpd.
  - The script downloads the given version from the XNAT ftp side.
+ - The script does not modify any firewall settings, for security reasons. To make the website accessable, please make sure that port 80 and 8104 (dicom gateway) are open in iptables or any other firewall service.  
  
 == Installation configuration ==
 Several settings can be configured in the file /etc/puppet/modules/xnat/tests/test.pp
