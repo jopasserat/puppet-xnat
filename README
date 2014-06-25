@@ -56,3 +56,4 @@ Noteworthy settings:
  - catalina_tmp_dir should be linked to a location with sufficient space. Uploads are also temporarily stored here, which can take up several GB's, depending on the upload datasize. 
  - tablespace_dir is the location of the database. This can be changed for improved backup support or to move the database to a faster disk, if required.
  - java_opts should be changed accordinly, based on the systems memory availibility.
+ - if any of the directories are changed, please also update the makedirs.sh (next to test.pp) accordingly. 
