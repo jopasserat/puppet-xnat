@@ -22,6 +22,7 @@ define xnat::xnatapp (
   $archive_root,  # for build.properties.erb
   $tomcat_web_user,
   $tomcat_web_password,
+  $tomcat_port,
   $apache_mail_address,
   $xnat_version,
   $java_opts,
@@ -53,7 +54,8 @@ define xnat::xnatapp (
 
   tomcat { "install tomcat": 
     tomcat_web_user => $tomcat_web_user,
-    tomcat_web_password => $tomcat_web_password
+    tomcat_web_password => $tomcat_web_password,
+    tomcat_port => $tomcat_port
   } -> 
 
   # Get latest updates

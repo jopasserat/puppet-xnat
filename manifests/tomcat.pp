@@ -16,7 +16,8 @@
 # Download and install tomcat
 define tomcat (
   $tomcat_web_user,
-  $tomcat_web_password)
+  $tomcat_web_password,
+  $tomcat_port)
 {
   include wget
 
@@ -70,6 +71,11 @@ define tomcat (
       ensure => present,
       content => template("xnat/tomcat-users.xml.erb"),
       mode => '644'
+    } ->
+
+    exec { "change connector port":
+      command => "sed 's/8080/$tomcat_port/g' server.xml > tmp && mv -f tmp server.xml",
+      cwd => "/usr/share/tomcat${apache_major_version}/conf/"
     } ->
 
     notify {"installing tomcat complete": }
