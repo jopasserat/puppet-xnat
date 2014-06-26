@@ -17,9 +17,14 @@ define init_apache (
   $apache_mail_address
 )
 {
-  require apache
+  class {"apache":
+    default_vhost => false
+  }   
+  
   require apache::mod::proxy
   require apache::mod::proxy_ajp
+
+  apache::listen { 80: } ->
 
   file { "write apache conf":
     path => "/etc/httpd/conf.d/xnat.conf",
