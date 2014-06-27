@@ -19,5 +19,6 @@ xnat::xnatapp { 'xnat-web-app-1':
   mail_password => "mailpass",
   mail_admin => "admin@localhost",
   mail_subject => "XNAT",
-  tablespace_dir => "/xnatdata/database"
+  tablespace_dir => "/xnatdata/database",
+  xnat_local_install => "" # rsync path (ip:xnat_file)
 }
