@@ -71,7 +71,9 @@ define xnat::xnatapp (
   } ->
 
   exec {"make xnat storage directories":
-    command => "sh /etc/puppet/modules/xnat/tests/makedirs.sh"
+    command => "mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir;\
+chmod -R 755 /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir;\
+chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir;"
   } ->
 
   init_database{ "run" :

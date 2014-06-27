@@ -19,6 +19,10 @@ define xnat::init_database (
   $db_name,
   $tablespace_dir)
 {
+  exec { "create tablespace":
+    command => "mkdir -p $tablespace_dir"
+  } ->
+
   class {"xnat_tablespace":
     tablespace_dir => $tablespace_dir
   } ->

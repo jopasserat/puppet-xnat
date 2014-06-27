@@ -12,12 +12,12 @@ xnat::xnatapp { 'xnat-web-app-1':
   apache_mail_address => "xnat@localhost",
   xnat_version => "1.6.3",
   java_opts => "-Xms1024m -Xmx6144m -XX:MaxPermSize=256m",
-  catalina_tmp_dir => "/xnatdata/temp",
+  catalina_tmp_dir => "/xnatdata/test",
   mail_server => "localhost",
   mail_port => 25,
   mail_username => "mailuser",
   mail_password => "mailpass",
   mail_admin => "admin@localhost",
   mail_subject => "XNAT",
-  tablespace_dir => "/xnatdata/database" # Also update makedirs.sh
+  tablespace_dir => "/xnatdata/database"
 }
