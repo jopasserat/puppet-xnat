@@ -34,7 +34,8 @@ define xnat::xnatapp (
   $mail_password,
   $mail_admin,
   $mail_subject,
-  $tablespace_dir
+  $tablespace_dir,
+  $xnat_local_install
 )
 {
   require java
@@ -67,7 +68,8 @@ define xnat::xnatapp (
 
   download_xnat{ "download xnat" :
     xnat_version => $xnat_version,
-    installer_dir => $installer_dir
+    installer_dir => $installer_dir,
+    xnat_local_install => $xnat_local_install
   } ->
 
   exec {"make xnat storage directories":

@@ -15,7 +15,8 @@
 
 define download_xnat (
   $xnat_version,
-  $installer_dir
+  $installer_dir,
+  $xnat_local_install
 )
 {
   if $xnat_exists == 'true' {
@@ -23,14 +24,9 @@ define download_xnat (
   } else {
     notify { "downloading XNAT ...": } ->
 
-    archive { "xnat-$xnat_version":
-      ensure => present,
-      url => "ftp://ftp.nrg.wustl.edu/pub/xnat/xnat-$xnat_version.tar.gz",
-      target => "/home/xnat",
-      extension => 'tar.gz',
-      checksum => true,
-      src_target => '/tmp',
-      timeout => 7200
+    class {"xnat::get_xnat": 
+      xnat_version => $xnat_version,
+      xnat_local_install => $xnat_local_install
     } ->
 
     # Clone the xnat builder dev branch, create files and set permissions (step 1)
