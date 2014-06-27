@@ -20,5 +20,5 @@ xnat::xnatapp { 'xnat-web-app-1':
   mail_admin => "admin@localhost",
   mail_subject => "XNAT",
   tablespace_dir => "/xnatdata/database",
-  xnat_local_install => "" # rsync path (ip:xnat_file)
+  xnat_local_install => "" # rsync path (ip:xnat_file). Leave empty for ftp download from xnat server.
 }
