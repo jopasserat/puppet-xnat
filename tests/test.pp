@@ -8,6 +8,7 @@ xnat::xnatapp { 'xnat-web-app-1':
   tomcat_web_user => "evast",
   tomcat_web_password => "test123",
   tomcat_port => "8090",
+  apache_port => "80",
   apache_mail_address => "xnat@localhost",
   xnat_version => "1.6.3",
   java_opts => "-Xms1024m -Xmx6144m -XX:MaxPermSize=256m",
