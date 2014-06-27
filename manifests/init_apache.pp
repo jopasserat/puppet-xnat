@@ -14,6 +14,7 @@
 # under the License.
 
 define init_apache (
+  $apache_port,
   $apache_mail_address
 )
 {
@@ -24,7 +25,7 @@ define init_apache (
   require apache::mod::proxy
   require apache::mod::proxy_ajp
 
-  apache::listen { 80: } ->
+  apache::listen { $apache_port: } ->
 
   file { "write apache conf":
     path => "/etc/httpd/conf.d/xnat.conf",

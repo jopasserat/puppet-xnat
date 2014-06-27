@@ -23,6 +23,7 @@ define xnat::xnatapp (
   $tomcat_web_user,
   $tomcat_web_password,
   $tomcat_port,
+  $apache_port,
   $apache_mail_address,
   $xnat_version,
   $java_opts,
@@ -41,7 +42,7 @@ define xnat::xnatapp (
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
-  $xnat_url = "http://${ip_address}/"
+  $xnat_url = "http://${ip_address}:$apache_port/"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
@@ -126,6 +127,7 @@ define xnat::xnatapp (
   } ->
 
   init_apache { "initialize apache proxy":
+    apache_port => $apache_port,
     apache_mail_address => $apache_mail_address
   }
 }
