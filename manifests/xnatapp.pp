@@ -61,10 +61,10 @@ define xnat::xnatapp (
   } -> 
 
   # Get latest updates
-  case $operatingsystem {
-    scientific, centos, redhat, fedora: { exec { "yum_update": command => "yum -y update", timeout => 3600}}
-    default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade", timeout => 3600}}
-  } ->
+  #case $operatingsystem {
+  #  scientific, centos, redhat, fedora: { exec { "yum_update": command => "yum -y update", timeout => 3600}}
+  #  default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade", timeout => 3600}}
+  #} ->
 
   download_xnat{ "download xnat" :
     xnat_version => $xnat_version,
