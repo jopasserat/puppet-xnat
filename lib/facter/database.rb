@@ -17,6 +17,6 @@
 
 Facter.add("database_exists") do
   setcode do
-    Facter::Util::Resolution.exec('sh /etc/puppet/modules/xnat/tests/database_exists.sh')
+    Facter::Util::Resolution.exec('/etc/puppet/modules/xnat/tests/database_exists.sh')
   end
 end
