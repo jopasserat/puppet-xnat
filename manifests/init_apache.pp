@@ -25,17 +25,24 @@ define init_apache (
   require apache::mod::proxy
   require apache::mod::proxy_ajp
 
+  $apache_service = "${apache::service_name}"
+
   apache::listen { $apache_port: } ->
 
   file { "write apache conf":
-    path => "/etc/httpd/conf.d/xnat.conf",
+    path => "${apache::vhost_dir}/xnat.conf",
     ensure => present,
     content => template("xnat/xnat.conf.erb"),
     mode => '644',
   } ->
 
+  # enable xnat site
+  exec { "enable XNAT site in apache":
+    command => "a2ensite xnat"
+  } ->
+
   # restart httpd (apache service enable does not restart)
-  exec { "restart httpd":
-    command => "service httpd restart"
+  exec { "restart ${apache::service_name}":
+    command => "service ${apache::service_name} restart"
   }
 }
