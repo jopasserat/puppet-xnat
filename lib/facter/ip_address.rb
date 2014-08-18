@@ -22,7 +22,7 @@ Facter.add("ip_address") do
        os_issue.include? "CentOS" then
       Facter::Util::Resolution.exec("ifconfig | grep -B 1 'inet addr:' | awk '/eth/{getline; print}' | cut -d: -f2 | awk '{print $1}'")
     else
-      Facter::Util::Resolution.exec("ifconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $2}'")
+      Facter::Util::Resolution.exec("ifconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $1}'")
     end
   end
 end
