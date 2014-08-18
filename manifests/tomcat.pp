@@ -22,7 +22,7 @@ define tomcat (
   include wget
 
   $apache_major_version = "7"
-  $apache_full_version = "7.0.54"
+  $apache_full_version = "7.0.55"
 
   if $tomcat_exists == 'true' {
     notify {"tomcat already installed": }
