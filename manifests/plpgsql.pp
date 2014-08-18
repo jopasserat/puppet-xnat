@@ -19,7 +19,7 @@ define plpgsql () {
     # Install plpgsql (required on some systems with Postgres < 9
     # Have to do it manually, no existing function available
     exec { "install_plpgsql":
-      command => "su postgres -c 'createlang -d xnat plpgsql'"
+      command => "su postgres -c 'createlang -d xnat plpgsql' | true"
     }
   }
 }
