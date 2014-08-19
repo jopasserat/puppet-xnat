@@ -48,6 +48,10 @@ define xnat::xnatapp (
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
+  file { "/home/xnat":
+    mode => 755
+  } ->
+
   # Stop tomcat
   exec { "stop tomcat":
     command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
