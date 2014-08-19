@@ -38,7 +38,8 @@ define init_apache (
 
   # enable xnat site
   exec { "enable XNAT site in apache":
-    command => "a2ensite xnat"
+    command => "a2ensite xnat",
+    onlyif => "test \"${apache::service_name}\" = \"apache2\"" 
   } ->
 
   # restart httpd (apache service enable does not restart)
