@@ -15,14 +15,17 @@
 
 Facter.add("ip_address") do
   setcode do
-    os_issue = `cat /etc/issue`    
+    os_issue = `cat /etc/issue`
     if os_issue.include? "Fedora" or
-       os_issue.include? "Red Hat" or
-	   os_issue.include? "Scientific" or
+       os_issue.include? "Scientific" or
        os_issue.include? "CentOS" then
       Facter::Util::Resolution.exec("ifconfig | grep -B 1 'inet addr:' | awk '/eth/{getline; print}' | cut -d: -f2 | awk '{print $1}'")
     else
-      Facter::Util::Resolution.exec("ifconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $1}'")
+      if os_issue.include? "Red Hat" then
+        Facter::Util::Resolution.exec("ip addr | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $2}' | awk -F'/' '{print $1}'")
+      else
+        Facter::Util::Resolution.exec("ifconfig | grep 'inet' | grep -v '127.0.0.1' | grep -v 'inet6' | cut -d: -f2 | awk '{print $1}'")
+      end
     end
   end
 end
