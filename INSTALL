@@ -21,7 +21,7 @@ For Scientific Linux the Fedora steps can be followed.
    - Ubuntu: apt-get install puppet
    - RedHat: 
      - for below: replace the 7s with 6s or 5s if that is the installed RedHat version. Replace x86_64 with i386 for systems with a 32-bit instruction set.
-     - sudo rpm -ivh http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7.noarch.rpm
+     - sudo rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
      - Install puppet: yum install puppet (confirm any required keys)
  - Install other packages: yum install wget git mercurial (confirm any required keys)
  - Update the operating system (if preferred): yum update
