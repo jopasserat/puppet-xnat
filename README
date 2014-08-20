@@ -1,6 +1,11 @@
 == XNAT puppet module ==
 
-This module configures an XNAT installation.
+This module configures an XNAT installation. The script has been tested on:
+
+ - Fedora 20.1
+ - RedHat Server 7.0
+ - Scientific Linux 6.5
+ - Ubuntu Server 14.0.4.1
 
 Acknowledgements: Thanks to Stefan Klein (Erasmus MC), Marcel Koek (Erasmus MC), Erwin Vast (Erasmus MC) and Pieter Lukasse (The Hyve).
 License: Apache License, see license file.
@@ -56,4 +61,4 @@ Noteworthy settings:
  - catalina_tmp_dir should be linked to a location with sufficient space. Uploads are also temporarily stored here, which can take up several GB's, depending on the upload datasize. 
  - tablespace_dir is the location of the database. This can be changed for improved backup support or to move the database to a faster disk, if required.
  - java_opts should be changed accordinly, based on the systems memory availibility.
- - if any of the directories are changed, please also update the makedirs.sh (next to test.pp) accordingly. 
+ - if any of the directories are changed, please also update the makedirs.sh (next to test.pp) accordingly.
