@@ -14,14 +14,14 @@ For Scientific Linux the Fedora steps can be followed.
      - for below: replace the 7s with 6s or 5s if that is the installed RedHat version. Replace x86_64 with i386 for systems with a 32-bit instruction set.
      - yum-config-manager --enable rhel-7-server-optional-rpms (run yum install yum-utils if not installed)
      - check if rhel-7-server-optional-rpms is shown in yum repolist
-     - if not, probably subscription-manager should be used: subscription-manager repos --enable=rhel-6-server-optional-rpms
+     - if not, probably subscription-manager should be used: subscription-manager repos --enable=rhel-7-server-optional-rpms
 	 - yum install rubygems (confirm any required keys)
  - Install puppet
    - Fedora: yum install puppet
    - Ubuntu: apt-get install puppet
    - RedHat: 
      - for below: replace the 7s with 6s or 5s if that is the installed RedHat version. Replace x86_64 with i386 for systems with a 32-bit instruction set.
-     - sudo rpm -ivh http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-6-10.noarch.rpm
+     - sudo rpm -ivh http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7.noarch.rpm
      - Install puppet: yum install puppet (confirm any required keys)
  - Install other packages: yum install wget git mercurial (confirm any required keys)
  - Update the operating system (if preferred): yum update
