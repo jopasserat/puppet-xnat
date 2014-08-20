@@ -27,11 +27,14 @@ For Scientific Linux the Fedora steps can be followed.
  - Update the operating system (if preferred): yum update
  - Retrieve the puppet repository: git clone https://bitbucket.org/bigr_erasmusmc/puppet-xnat /etc/puppet/modules/xnat (space after puppet-xnat)
  - Run install script (also runs Puppet script). sh /etc/puppet/modules/xnat/preinstall.sh
+
+Notes:
+
  - The output of the puppet script can be found in /puppet.out for debugging any problems (should not occur)
  - The complete installation can take up to an hour depending on internet/computer speed. 
-
-Known issues with installation:
- - Sometimes tomcat does not shutdown properly and therefore multiple instances are running. If the website is not reachable, check with ps aux | grep java if multiple tomcat instances are running. If this is the cast, kill the processes with kill -9 [PID from ps aux] and restart tomcat with sh /usr/share/tomcat7/bin/startup.sh . After about a minute the website should be reachable.
  - For security reasons we advice to use XNAT only using an https/SSL connection. Instructions can be found here: http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html.
+ - When XNAT is installed for the first time, an configuration window is opened when browsing to the machine web ip/address (login is admin/admin). Configure all settings. Note: you should provide the directories in which the image data should be stored. This is already configured by the puppet script, but make sure these directories have sufficient disk space available.
+
+Known issues with installation (but rare):
+ - Sometimes tomcat does not shutdown properly and therefore multiple instances are running. If the website is not reachable, check with ps aux | grep java if multiple tomcat instances are running. If this is the cast, kill the processes with kill -9 [PID from ps aux] and restart tomcat with sh /usr/share/tomcat7/bin/startup.sh . After about a minute the website should be reachable.
  - The installation script automatically detects the ip address of the installation machine. In some situations this does not work properly. If you cannot access the website, you can manually configure the ip-address in /usr/share/tomcat7/webapps/ROOT/WEB-INF/conf/InstanceSettings.xml on line 3. Furthermore, if it still does not work, you can set the org.restlet.autoWire param-value on false in /usr/share/tomcat7/webapps/ROOT/WEB-INF/web.xml on line 40.
- - When XNAT is installed for the first time, an configuration window is opened. Configure all settings. Note: you should provide the directories in which the image data should be stored. This is already configured by the puppet script, but make sure these directories have sufficient disk space available.
