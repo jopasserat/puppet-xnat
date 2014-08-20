@@ -11,7 +11,7 @@ For Scientific Linux the Fedora steps can be followed.
    - Ubuntu: apt-get install ruby
    - Fedora: yum install rubygems
    - RedHat: 
-     - yum-config-manager --enable rhel-6-server-optional-rpms
+     - yum-config-manager --enable rhel-6-server-optional-rpms (run yum install yum-utils if not installed)
      - check if rhel-6-server-optional-rpms is shown in yum repolist
      - if not, probably subscription-manager should be used: subscription-manager repos --enable=rhel-6-server-optional-rpms
 	 - yum install rubygems (confirm any required keys)
