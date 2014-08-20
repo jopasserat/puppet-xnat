@@ -17,8 +17,8 @@ Facter.add("ip_address") do
   setcode do
     # use both /etc/issue as /etc/os-release
     # in Red Hat /etc/issue does not always work correctly but also has /etc/os-release
-    # not al os's do have /etc/os-release, so ignore not existing file errors for that case
-    # it works as long an os has the OS mentioned in one of the files they are concatenated
+    # not all os's do have /etc/os-release, so ignore not existing file errors for that case
+    # it works as long an os has the OS mentioned in one of the files as they are concatenated
     os_issue = `cat /etc/issue /etc/os-release 2> /dev/null`
     if os_issue.include? "Fedora" or
        os_issue.include? "Scientific" or
