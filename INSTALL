@@ -15,7 +15,7 @@ For Scientific Linux the Fedora steps can be followed.
      - yum-config-manager --enable rhel-7-server-optional-rpms (run yum install yum-utils if not installed)
      - check if rhel-7-server-optional-rpms is shown in yum repolist
      - if not, probably subscription-manager should be used: subscription-manager repos --enable=rhel-7-server-optional-rpms
-	 - yum install rubygems (confirm any required keys)
+     - yum install rubygems (confirm any required keys)
  - Install puppet
    - Fedora: yum install puppet
    - Ubuntu: apt-get install puppet
