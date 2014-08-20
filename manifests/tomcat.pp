@@ -78,6 +78,11 @@ define tomcat (
       cwd => "/usr/share/tomcat${apache_major_version}/conf/"
     } ->
 
+    exec { "disable httponly context":
+      command => "sed 's/<Context>/<Context useHttpOnly=\"false\">/g' context.xml > tmp && mv -f tmp context.xml",
+      cwd => "/usr/share/tomcat${apache_major_version}/conf/"
+    } ->
+
     notify {"installing tomcat complete": }
   }
 }
