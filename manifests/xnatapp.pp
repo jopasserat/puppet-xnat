@@ -58,11 +58,23 @@ define xnat::xnatapp (
     onlyif => "test -e /usr/share/tomcat7/bin/shutdown.sh"
   } ->
 
-  tomcat { "install tomcat": 
-    tomcat_web_user => $tomcat_web_user,
-    tomcat_web_password => $tomcat_web_password,
-    tomcat_port => $tomcat_port
-  } -> 
+  class { 'tomcat':
+      install_from_source => false,
+  }
+  class { 'epel': }->
+  tomcat::instance{ 'default':
+      package_name => 'tomcat7',
+  }->
+  tomcat::service { 'default':
+    use_jsvc     => false,
+    use_init     => true,
+    service_name => 'tomcat',
+  } ->
+#  tomcat { "install tomcat": 
+#    tomcat_web_user => $tomcat_web_user,
+#    tomcat_web_password => $tomcat_web_password,
+#    tomcat_port => $tomcat_port
+#  } -> 
 
   # Get latest updates
   #case $operatingsystem {
