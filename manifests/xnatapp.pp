@@ -124,7 +124,7 @@ bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,
   exec { "xnat-setup":
     command => "$installer_dir/bin/setup.sh > setup.out",
     cwd => "$installer_dir",
-    environment => "JAVA_HOME=/usr/lib/jvm/jdk1.7.0_60/",
+    environment => "JAVA_HOME=${::java_home}",
     timeout => 3600000,
     unless => "test -d $installer_dir/deployments/$instance_name"
   } ->
