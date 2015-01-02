@@ -59,6 +59,7 @@ define tomcatBigr (
       path => "/tmp/apache-tomcat-${apache_full_version}.tar.gz"
     } ->
 
+    # TODO apply
     file { "write setenv": 
       path => "/usr/share/tomcat${apache_major_version}/bin/setenv.sh",
       ensure => present,
@@ -66,6 +67,7 @@ define tomcatBigr (
       mode => '644'
     } ->
 
+    # TODO apply
     file { "write tomcat-users":
       path => "/usr/share/tomcat${apache_major_version}/conf/tomcat-users.xml",
       ensure => present,
@@ -78,6 +80,7 @@ define tomcatBigr (
       cwd => "/usr/share/tomcat${apache_major_version}/conf/"
     } ->
 
+    # TODO apply
     exec { "disable httponly context":
       command => "sed 's/<Context>/<Context useHttpOnly=\"false\">/g' context.xml > tmp && mv -f tmp context.xml",
       cwd => "/usr/share/tomcat${apache_major_version}/conf/"

@@ -70,7 +70,14 @@ define xnat::xnatapp (
     use_init     => true,
     service_name => 'tomcat',
   } ->
+  tomcat::config::server { 'default':
+    port => $tomcat_port,
+  }->
+  tomcat::config::server::connector { 'default':
+    port => $tomcat_port,
+  }
 #  tomcat { "install tomcat": 
+#TODO can we configure web user/pwd? + remaining conf in original tomcat.pp
 #    tomcat_web_user => $tomcat_web_user,
 #    tomcat_web_password => $tomcat_web_password,
 #    tomcat_port => $tomcat_port
