@@ -13,7 +13,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Get the JAVA_HOME environment variable path.
+# Check whether DB exists
 
 Facter.add("database_exists") do
   setcode do
