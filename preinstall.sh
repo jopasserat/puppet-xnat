@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd /etc/puppet/modules/
-gem install puppet-module
+#gem install puppet-module
 #mv xnat/install_dependencies.sh .
 sh xnat/install_dependencies.sh
 #mkdir -p /usr/lib/jvm/
