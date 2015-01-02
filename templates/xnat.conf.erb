@@ -1,8 +1,8 @@
 NameVirtualHost *:<%= @apache_port %>
 
 <VirtualHost *:<%= @apache_port %>>
-  ServerName <%= @ip_address %>
-  ServerAlias <%= @ip_address %>
+  ServerName <%= @ipaddress %>
+  ServerAlias <%= @ipaddress %>
   ServerAdmin <%= @apache_mail_address %>
   ErrorLog /var/log/<%= @apache_service %>/<%= @instance_name %>.log
   CustomLog /var/log/<%= @apache_service %>/<%= @instance_name %>.log combined

@@ -43,7 +43,7 @@ define xnat::xnatapp (
 
   $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
-  $xnat_url = "http://${ip_address}:$apache_port/"
+  $xnat_url = "http://${::ipaddress}:$apache_port/"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
