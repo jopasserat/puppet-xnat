@@ -41,8 +41,10 @@ define xnat::xnatapp (
   require java
   require postgresql::server
 
-  $tomcat_root = "/usr/share/tomcat7"
+  # $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
+  # FIXME problematic with vagrant -> accessing XNAT through localhost gets replaced
+  # by VM's IP (not routed) beyond login page
   $xnat_url = "http://${::ipaddress}:$apache_port/"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
@@ -60,28 +62,38 @@ define xnat::xnatapp (
 
   class { 'tomcat':
       install_from_source => false,
+      # FIXME doesn't work? service runs under user tomcat7...
+      user                => 'tomcat',
   }
   class { 'epel': }->
   tomcat::instance{ 'default':
-      package_name => 'tomcat7',
+      package_name  => 'tomcat7',
   }->
   tomcat::service { 'default':
     use_jsvc     => false,
     use_init     => true,
-    service_name => 'tomcat',
-  } ->
-  tomcat::config::server { 'default':
-    port => $tomcat_port,
-  }->
-  tomcat::config::server::connector { 'default':
-    port => $tomcat_port,
-  }
+    service_name => 'tomcat7',
+    catalina_home => '/usr/share/tomcat7',
+    catalina_base => '/var/lib/tomcat7',
+  } 
+  # tomcat::config::server { 'default':
+  #  port => $tomcat_port,
+  #}
+  #tomcat::config::server::connector { 'default':
+  #  port   => $tomcat_port,
+    #  notify => Service['tomcat7'],
+    #}
 #  tomcat { "install tomcat": 
 #TODO can we configure web user/pwd? + remaining conf in original tomcat.pp
 #    tomcat_web_user => $tomcat_web_user,
 #    tomcat_web_password => $tomcat_web_password,
 #    tomcat_port => $tomcat_port
 #  } -> 
+
+  $tomcat_root = "/var/lib/tomcat7"
+  notify { 'info':
+    message => "Tomcat root is ${tomcat_root}",
+  }
 
   # Get latest updates
   #case $operatingsystem {
@@ -137,24 +149,45 @@ bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,
     db_username => $db_username
   } ->
 
-  exec { "move old tomcat ROOT folder": 
-    command => "mv /usr/share/tomcat7/webapps/ROOT /usr/share/tomcat7/webapps/tomcat",
-    unless => "test -d /usr/share/tomcat7/webapps/tomcat"
-  } ->
+  # What for?
+  #exec { "move old tomcat ROOT folder": 
+  #  command => "mv /usr/share/tomcat7/webapps/ROOT /usr/share/tomcat7/webapps/tomcat",
+  #  unless => "test -d /usr/share/tomcat7/webapps/tomcat"
+  #} ->
 
   # Copy the generated war
-  file {"$tomcat_root/webapps/$instance_name.war":
-    ensure => present,
-    source => "$installer_dir/deployments/$instance_name/target/$instance_name.war"
+  file { "$tomcat_root/webapps":
+    ensure => directory,
+    owner  => $::tomcat::user,
+    group  => $::tomcat::group,
   } ->
+  tomcat::war { "${instance_name}.war":
+    war_source      => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
+    # FIXME is it actually taken into account?
+    deployment_path =>  "$tomcat_root/webapps",
+    notify          => Service['tomcat7'],
+  }
 
-  exec {"stop and start tomcat":
-    command => "su tomcat -c /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c '/usr/share/tomcat7/bin/startup.sh'",
-    cwd => "$tomcat_root/logs"
-  } ->
+  #file {"$tomcat_root/webapps/$instance_name.war":
+  #  ensure => present,
+  #  source => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
+  #  notify => Service['tomcat7'],
+  #} -> 
 
+  # tomcat::service { 'restart tomcat':
+  #  use_jsvc         => false,
+  #  use_init         => true,
+  #  service_name     => 'tomcat7',
+  #}
+  #  exec {"stop and start tomcat":
+  #  command => "su tomcat -c /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c '/usr/share/tomcat7/bin/startup.sh'",
+  #  cwd => "$tomcat_root/logs"
+  #} ->
+
+  # FIXME not working
   init_apache { "initialize apache proxy":
     apache_port => $apache_port,
     apache_mail_address => $apache_mail_address
   }
 }
+

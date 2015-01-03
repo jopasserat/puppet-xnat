@@ -19,6 +19,7 @@ define xnat::fill_database (
   $instance_name,
   $db_username)
 {
+  # FIXME something wrong with DB init, had to redo it by hand
   if $database_exists == 1 {
     notify {"postgresql database already configured": }
 

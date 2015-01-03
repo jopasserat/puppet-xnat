@@ -13,6 +13,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# FIXME does not take into account faulty installation
 if FileTest.directory?("/home/xnat/xnat")
   Facter.add("xnat_exists") do
     setcode { true }
