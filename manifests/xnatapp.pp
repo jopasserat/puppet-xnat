@@ -101,16 +101,35 @@ define xnat::xnatapp (
   #  default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade", timeout => 3600}}
   #} ->
 
+  # FIXME these directories should belong to tomcat's user
+  xnatStorageDirs => [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
+  #exec {"make xnat storage directories":
+  #  command => "bash -c 'mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
+  #bash -c 'chmod -R 755 /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
+  #bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';"
+  #} ->
+
+  define mkXnatDir {
+    file {"/${archive_root}/$name":
+      ensure => directory,
+      mode   => 0755,
+      owner  => $::tomcat::user,
+      group  => $::tomcat::group,
+    }
+  }
+  
   download_xnat{ "download xnat" :
     xnat_version => $xnat_version,
     installer_dir => $installer_dir,
     xnat_local_install => $xnat_local_install
   } ->
 
-  exec {"make xnat storage directories":
-    command => "bash -c 'mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
-bash -c 'chmod -R 755 /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
-bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';"
+  mkXnatDir { $xnatStorageDirs: } ->
+  file {$catalina_tmp_dir:
+    ensure => directory,
+    mode   => 0755,
+    owner  => $::tomcat::user,
+    group  => $::tomcat::group,
   } ->
 
   init_database{ "run" :
