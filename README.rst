@@ -77,10 +77,10 @@ The script has been tested on:
 Licencing
 ---------
 
-This work is distributed under the [GNU Affero GPL v3.0](http://www.gnu.org/licenses/agpl-3.0.txt).
+This work is distributed under the `GNU Affero GPL v3.0 <http://www.gnu.org/licenses/agpl-3.0.txt>`_.
 
 This work reuses the Puppet module provided by the Bigr group from Erasmus university.
-The base puppet module is available [here](https://bitbucket.org/bigr_erasmusmc/puppet-xnat) under an Apache 2.0 Licence.
+The base puppet module is available `here <https://bitbucket.org/bigr_erasmusmc/puppet-xnat>`_ under an Apache 2.0 Licence.
 
 The AGPL v3.0 only concerns the modified parts and is not an attempt to modify the distribution licence from Bigr's Puppet module.
 
