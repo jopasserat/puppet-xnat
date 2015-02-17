@@ -161,6 +161,7 @@ define xnat::xnatapp (
   } ->
 
   # Initialize database for XNAT
+  # TODO replace DB + user creation by postgreql::server::db
   fill_database{ "setup postgres database" :
     system_user => $system_user,
     instance_name => $instance_name,
@@ -203,7 +204,7 @@ define xnat::xnatapp (
   #  cwd => "$tomcat_root/logs"
   #} ->
 
-  # FIXME not working
+  # FIXME not working -> replace with Nginx
   init_apache { "initialize apache proxy":
     apache_port => $apache_port,
     apache_mail_address => $apache_mail_address
