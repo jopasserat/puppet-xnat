@@ -35,17 +35,17 @@ Move tomcat ROOT (see notes)   If {tomcat}/webapps/tomcat does not exist
 
 *Notes*
 
- - An apache proxy is used to redirect requests from port 80 to 8080, which is tomcat's default port. Because root rights are required for ports < 1024, we have choosen apache as the proxy, as jsvc is more complex for automatic installation. This works only if xnat is deployed as ROOT, and therefore the existing ROOT (tomcat status/manager) is moved to the webapp /tomcat. The webpage is still accessable by http{s}://{hostname}/tomcat .
- - The puppet script also copies a .jinfo file to the java installation location. This is required for a correct java installation with the update-alternatives application.
- - The xnat database can be removed the following way (for testing):
-   NOTE: ALL XNAT DATA WILL BE REMOVED! MAKE A BACKUP!
-    - sudo -u postgres psql
-    - DROP DATABASE xnat
-    - \q (for exit psql)
- - The XNAT installation can be run with SELinux Enabled. The script has been adapted and tested to run with SELinux.
- - Depending on the OS, apache may be installed as apache, apache2, apache22 or httpd.
- - The script downloads the given version from the XNAT ftp side.
- - The script does not modify any firewall settings, for security reasons. To make the website accessable, please make sure that port 80 and 8104 (dicom gateway) are open in iptables or any other firewall service.
+- An apache proxy is used to redirect requests from port 80 to 8080, which is tomcat's default port. Because root rights are required for ports < 1024, we have choosen apache as the proxy, as jsvc is more complex for automatic installation. This works only if xnat is deployed as ROOT, and therefore the existing ROOT (tomcat status/manager) is moved to the webapp /tomcat. The webpage is still accessable by http{s}://{hostname}/tomcat .
+- The puppet script also copies a .jinfo file to the java installation location. This is required for a correct java installation with the update-alternatives application.
+- The xnat database can be removed the following way (for testing):
+ NOTE: ALL XNAT DATA WILL BE REMOVED! MAKE A BACKUP!
+ - sudo -u postgres psql
+ - DROP DATABASE xnat
+ - \q (for exit psql)
+- The XNAT installation can be run with SELinux Enabled. The script has been adapted and tested to run with SELinux.
+- Depending on the OS, apache may be installed as apache, apache2, apache22 or httpd.
+- The script downloads the given version from the XNAT ftp side.
+- The script does not modify any firewall settings, for security reasons. To make the website accessable, please make sure that port 80 and 8104 (dicom gateway) are open in iptables or any other firewall service.
 
 
 Installation configuration
@@ -56,23 +56,23 @@ Please review these settings before running the puppet script.
 
 Noteworthy settings:
 
- - db_userpassword should be set to a new password for the database.
- - archive_root is where all imaging data (and support files) are stored.
- - tomcat_web_user/password can be set to access tomcat's status/management pages.
- - catalina_tmp_dir should be linked to a location with sufficient space. Uploads are also temporarily stored here, which can take up several GB's, depending on the upload datasize.
- - tablespace_dir is the location of the database. This can be changed for improved backup support or to move the database to a faster disk, if required.
- - java_opts should be changed accordinly, based on the systems memory availibility.
- - if any of the directories are changed, please also update the makedirs.sh (next to test.pp) accordingly.
+- db_userpassword should be set to a new password for the database.
+- archive_root is where all imaging data (and support files) are stored.
+- tomcat_web_user/password can be set to access tomcat's status/management pages.
+- catalina_tmp_dir should be linked to a location with sufficient space. Uploads are also temporarily stored here, which can take up several GB's, depending on the upload datasize.
+- tablespace_dir is the location of the database. This can be changed for improved backup support or to move the database to a faster disk, if required.
+- java_opts should be changed accordinly, based on the systems memory availibility.
+- if any of the directories are changed, please also update the makedirs.sh (next to test.pp) accordingly.
 
 Compatibility
 -------------
 
- The script has been tested on:
+The script has been tested on:
 
- - Fedora 20.1
- - RedHat Server 7.0
- - Scientific Linux 6.5
- - Ubuntu Server 14.0.4.1
+- Fedora 20.1
+- RedHat Server 7.0
+- Scientific Linux 6.5
+- Ubuntu Server 14.0.4.1
 
 Licencing
 ---------
