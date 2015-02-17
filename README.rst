@@ -5,7 +5,7 @@ This module deploys and configures an XNAT installation using Puppet.
 Installation
 ---------------
 
-See the [INSTALL](INSTALL) file for the prerequisites before using the puppet script. See Installation Configuration below for important settings.
+See the `INSTALL <INSTALL>`_ file for the prerequisites before using the puppet script. See Installation Configuration below for important settings.
 
 The puppet script installs several services and packages. The install locations vary per package. We provide the following table with the exact details per package that can be used in case of errors, later updates or partial installs/repairs. For repairing or updating a system, the puppet script can be ru-run, even the puppet script is not changed. It uses the checks that are listed in the Check column to determine if a package is already installed. If one makes the check condition false (e.g. removing the listed directory), the puppet script will re-install that specific package. Beside the checks, the puppet script will -always- copy the latest XNAT build to the tomcat webapps directory and restart the service.
 
