@@ -41,7 +41,14 @@ define xnat::xnatapp (
   require java
   require postgresql::server
 
-  # $tomcat_root = "/usr/share/tomcat7"
+  user { 'xnat':
+    ensure      => 'present',
+    managehome  =>  true,
+    system      =>  true,
+    home        => '/home/xnat',
+  }
+
+# $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
   # FIXME problematic with vagrant -> accessing XNAT through localhost gets replaced
   # by VM's IP (not routed) beyond login page
@@ -50,9 +57,9 @@ define xnat::xnatapp (
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
-  file { "/home/xnat":
-    mode => 755
-  } ->
+#  file { "/home/xnat":
+#    mode => 755
+#  } ->
 
   # Stop tomcat
   exec { "stop tomcat":
@@ -102,21 +109,13 @@ define xnat::xnatapp (
   #} ->
 
   # FIXME these directories should belong to tomcat's user
-  xnatStorageDirs => [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
+  $xnatStorageDirs = [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
   #exec {"make xnat storage directories":
   #  command => "bash -c 'mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
   #bash -c 'chmod -R 755 /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
   #bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';"
   #} ->
 
-  define mkXnatDir {
-    file {"/${archive_root}/$name":
-      ensure => directory,
-      mode   => 0755,
-      owner  => $::tomcat::user,
-      group  => $::tomcat::group,
-    }
-  }
   
   download_xnat{ "download xnat" :
     xnat_version => $xnat_version,
@@ -124,7 +123,9 @@ define xnat::xnatapp (
     xnat_local_install => $xnat_local_install
   } ->
 
-  mkXnatDir { $xnatStorageDirs: } ->
+  mk_xnat_dir { $xnatStorageDirs:
+    archive_root => $archive_root,
+ } ->
   file {$catalina_tmp_dir:
     ensure => directory,
     mode   => 0755,
