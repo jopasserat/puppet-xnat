@@ -1,7 +1,7 @@
-Installation instruction
-========================
+Installation instructions
+=========================
 
-*Some steps may not be required on existing systems.*
+*Some steps may not be required on existing systems.*  
 *For Scientific Linux the Fedora steps can be followed.* 
 
  - Log in as root
@@ -15,7 +15,7 @@ Installation instruction
    - Fedora: `yum install rubygems`
    - RedHat: 
      - for below: replace the 7s with 6s or 5s if that is the installed RedHat version. Replace x86_64 with i386 for systems with a 32-bit instruction set.
-     - y`um-config-manager --enable rhel-7-server-optional-rpms` (run `yum install yum-utils` if not installed)
+     - `yum-config-manager --enable rhel-7-server-optional-rpms` (run `yum install yum-utils` if not installed)
      - check if rhel-7-server-optional-rpms is shown in yum repolist
      - if not, probably subscription-manager should be used: subscription-manager repos --enable=rhel-7-server-optional-rpms
      - `yum install rubygems` (confirm any required keys)
