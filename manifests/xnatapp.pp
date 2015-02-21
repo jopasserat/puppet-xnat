@@ -70,8 +70,9 @@ define xnat::xnatapp (
   class { 'tomcat':
       install_from_source => false,
       # FIXME doesn't work? service runs under user tomcat7...
-      user                => 'tomcat',
-  }
+      user                => 'tomcat7',
+      group               => 'tomcat7',
+  } ->
   class { 'epel': }->
   tomcat::instance{ 'default':
       package_name  => 'tomcat7',
@@ -102,7 +103,13 @@ define xnat::xnatapp (
     message => "Tomcat root is ${tomcat_root}",
   }
 
-  # FIXME these directories should belong to tomcat's user
+ 
+  download_xnat{ "download xnat" :
+    xnat_version => $xnat_version,
+    installer_dir => $installer_dir,
+    xnat_local_install => $xnat_local_install
+  }
+
   $xnatStorageDirs = [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
   #exec {"make xnat storage directories":
   #  command => "bash -c 'mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
@@ -110,14 +117,7 @@ define xnat::xnatapp (
   #bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';"
   #} ->
 
-  
-  download_xnat{ "download xnat" :
-    xnat_version => $xnat_version,
-    installer_dir => $installer_dir,
-    xnat_local_install => $xnat_local_install
-  }
-
-  # ensure archive root creation (not recursice, only works to create final leaf of directory structure)
+   # ensure archive root creation (not recursice, only works to create final leaf of directory structure)
   mk_xnat_dir { $archive_root:
     archive_root => '',
   } ->
@@ -184,6 +184,8 @@ define xnat::xnatapp (
     war_source      => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
     # FIXME is it actually taken into account?
     deployment_path =>  "$tomcat_root/webapps",
+    war_ensure      => present,
+    war_purge 	    => true,
     notify          => Service['tomcat7'],
   }
 
