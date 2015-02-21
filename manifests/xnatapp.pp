@@ -62,12 +62,7 @@ define xnat::xnatapp (
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
 
-  # Stop tomcat
-#  exec { "stop tomcat":
-#    command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
-#    onlyif => "test -e /usr/share/tomcat7/bin/shutdown.sh"
-#  } ->
-
+  ### Install and configure Tomcat ### 
   $tomcat_version = 'tomcat7'
   class { 'tomcat':
       install_from_source => false,
@@ -103,8 +98,8 @@ define xnat::xnatapp (
   notify { 'info':
     message => "Tomcat root is ${tomcat_root}",
   }
-
- 
+  
+  #### XNAT download, environment setup and install #### 
   download_xnat{ "download xnat" :
     xnat_version => $xnat_version,
     installer_dir => $installer_dir,
@@ -112,24 +107,14 @@ define xnat::xnatapp (
   }
 
   $xnatStorageDirs = [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
-  #exec {"make xnat storage directories":
-  #  command => "bash -c 'mkdir -p /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
-  #bash -c 'chmod -R 755 /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';\
-  #bash -c 'chown tomcat:tomcat /$archive_root/{archive,build,cache,ftp,prearchive,modules} $catalina_tmp_dir';"
-  #} ->
-
-   # ensure archive root creation (not recursice, only works to create final leaf of directory structure)
-  mk_xnat_dir { $archive_root:
-    archive_root => '',
+  exec {"ensure XNAT archive root is created":
+    command => "bash -c 'mkdir -p $archive_root'",
   } ->
   mk_xnat_dir { $xnatStorageDirs:
     archive_root => $archive_root,
   } ->
-  file {$catalina_tmp_dir:
-    ensure => directory,
-    mode   => 0755,
-    owner  => $::tomcat::user,
-    group  => $::tomcat::group,
+  mk_xnat_dir { $catalina_tmp_dir:
+    archive_root => '',
   } ->
 
   init_database{ "run" :
@@ -169,12 +154,6 @@ define xnat::xnatapp (
     db_username => $db_username
   } ->
 
-  # What for?
-  #exec { "move old tomcat ROOT folder": 
-  #  command => "mv /usr/share/tomcat7/webapps/ROOT /usr/share/tomcat7/webapps/tomcat",
-  #  unless => "test -d /usr/share/tomcat7/webapps/tomcat"
-  #} ->
-
   # Copy the generated war
   file { "$tomcat_root/webapps":
     ensure => directory,
@@ -189,22 +168,8 @@ define xnat::xnatapp (
     notify          => Service[$tomcat_version],
   }
 
-  #file {"$tomcat_root/webapps/$instance_name.war":
-  #  ensure => present,
-  #  source => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
-  #  notify => Service['tomcat7'],
-  #} -> 
 
-  # tomcat::service { 'restart tomcat':
-  #  use_jsvc         => false,
-  #  use_init         => true,
-  #  service_name     => 'tomcat7',
-  #}
-  #  exec {"stop and start tomcat":
-  #  command => "su tomcat -c /usr/share/tomcat7/bin/shutdown.sh && su tomcat -c '/usr/share/tomcat7/bin/startup.sh'",
-  #  cwd => "$tomcat_root/logs"
-  #} ->
-
+  ### Proxy Tomcat through HTTP server ###
   # FIXME not working -> replace with Nginx
   init_apache { "initialize apache proxy":
     apache_port => $apache_port,
