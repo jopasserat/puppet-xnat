@@ -102,12 +102,6 @@ define xnat::xnatapp (
     message => "Tomcat root is ${tomcat_root}",
   }
 
-  # Get latest updates
-  #case $operatingsystem {
-  #  scientific, centos, redhat, fedora: { exec { "yum_update": command => "yum -y update", timeout => 3600}}
-  #  default: { exec { "apt_get_update": command => "apt-get update;apt-get upgrade", timeout => 3600}}
-  #} ->
-
   # FIXME these directories should belong to tomcat's user
   $xnatStorageDirs = [ 'archive', 'build', 'cache', 'ftp', 'prearchive', 'modules' ]
   #exec {"make xnat storage directories":
@@ -121,11 +115,15 @@ define xnat::xnatapp (
     xnat_version => $xnat_version,
     installer_dir => $installer_dir,
     xnat_local_install => $xnat_local_install
-  } ->
+  }
 
+  # ensure archive root creation (not recursice, only works to create final leaf of directory structure)
+  mk_xnat_dir { $archive_root:
+    archive_root => '',
+  } ->
   mk_xnat_dir { $xnatStorageDirs:
     archive_root => $archive_root,
- } ->
+  } ->
   file {$catalina_tmp_dir:
     ensure => directory,
     mode   => 0755,
