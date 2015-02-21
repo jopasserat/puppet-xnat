@@ -8,4 +8,3 @@ puppet module install glarizza-pick
 puppet module install camptocamp-archive
 puppet module install puppetlabs-java
 puppet module install stahnma-epel
-puppet module install puppetlabs-tomcat
