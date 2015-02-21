@@ -41,15 +41,16 @@ define xnat::xnatapp (
   require java
   require postgresql::server
 
+  $xnat_homedir = '/home/xnat'
   user { 'xnat':
     ensure      => 'present',
     managehome  =>  true,
     system      =>  true,
-    home        => '/home/xnat',
+    home        => $xnat_homedir,
+  } ->
+  file { $xnat_homedir:
+    mode => 755
   }
-#  file { "/home/xnat":
-#    mode => 755
-#  } ->
 
 # $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
