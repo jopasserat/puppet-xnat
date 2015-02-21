@@ -47,6 +47,9 @@ define xnat::xnatapp (
     system      =>  true,
     home        => '/home/xnat',
   }
+#  file { "/home/xnat":
+#    mode => 755
+#  } ->
 
 # $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
@@ -57,32 +60,29 @@ define xnat::xnatapp (
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
-#  file { "/home/xnat":
-#    mode => 755
-#  } ->
 
   # Stop tomcat
-  exec { "stop tomcat":
-    command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
-    onlyif => "test -e /usr/share/tomcat7/bin/shutdown.sh"
-  } ->
+#  exec { "stop tomcat":
+#    command => "su tomcat -c 'sh /usr/share/tomcat7/bin/shutdown.sh'",
+#    onlyif => "test -e /usr/share/tomcat7/bin/shutdown.sh"
+#  } ->
 
+  $tomcat_version = 'tomcat7'
   class { 'tomcat':
       install_from_source => false,
-      # FIXME doesn't work? service runs under user tomcat7...
-      user                => 'tomcat7',
-      group               => 'tomcat7',
+      user                => "$tomcat_version",
+      group               => "$tomcat_version",
   } ->
   class { 'epel': }->
   tomcat::instance{ 'default':
-      package_name  => 'tomcat7',
+      package_name  => "$tomcat_version",
   }->
   tomcat::service { 'default':
     use_jsvc     => false,
     use_init     => true,
-    service_name => 'tomcat7',
-    catalina_home => '/usr/share/tomcat7',
-    catalina_base => '/var/lib/tomcat7',
+    service_name => "$tomcat_version",
+    catalina_home => "/usr/share/${tomcat_version}",
+    catalina_base => "/var/lib/${tomcat_version}",
   } 
   # tomcat::config::server { 'default':
   #  port => $tomcat_port,
@@ -98,7 +98,7 @@ define xnat::xnatapp (
 #    tomcat_port => $tomcat_port
 #  } -> 
 
-  $tomcat_root = "/var/lib/tomcat7"
+  $tomcat_root = "/var/lib/${tomcat_version}"
   notify { 'info':
     message => "Tomcat root is ${tomcat_root}",
   }
@@ -182,11 +182,10 @@ define xnat::xnatapp (
   } ->
   tomcat::war { "${instance_name}.war":
     war_source      => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
-    # FIXME is it actually taken into account?
     deployment_path =>  "$tomcat_root/webapps",
     war_ensure      => present,
     war_purge 	    => true,
-    notify          => Service['tomcat7'],
+    notify          => Service[$tomcat_version],
   }
 
   #file {"$tomcat_root/webapps/$instance_name.war":
