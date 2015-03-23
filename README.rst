@@ -19,7 +19,7 @@ No       java         /usr/lib/jvm/{version}      If install location exists
 Yes      postgresql   via package manager         Determined by puppet package
 No       tomcat       /usr/share/tomcat{version}  If install location exists
 No       xnat         /home/xnat/xnat             If install location exists
-Yes      apache       via package manager         Determined by puppet package
+Yes      nginx        via package manager         Determined by puppet package
 ======   ==========   ==========================  ============================
 
 *Other checks*
@@ -35,7 +35,7 @@ Move tomcat ROOT (see notes)   If {tomcat}/webapps/tomcat does not exist
 
 *Notes*
 
-- An apache proxy is used to redirect requests from port 80 to 8080, which is tomcat's default port. Because root rights are required for ports < 1024, we have choosen apache as the proxy, as jsvc is more complex for automatic installation. This works only if xnat is deployed as ROOT, and therefore the existing ROOT (tomcat status/manager) is moved to the webapp /tomcat. The webpage is still accessable by http{s}://{hostname}/tomcat .
+- An Nginx proxy is used to redirect requests from port 443 to 8080, which is tomcat's default port.
 - The puppet script also copies a .jinfo file to the java installation location. This is required for a correct java installation with the update-alternatives application.
 - The xnat database can be removed the following way (for testing):
  NOTE: ALL XNAT DATA WILL BE REMOVED! MAKE A BACKUP!
@@ -43,7 +43,6 @@ Move tomcat ROOT (see notes)   If {tomcat}/webapps/tomcat does not exist
  - DROP DATABASE xnat
  - \q (for exit psql)
 - The XNAT installation can be run with SELinux Enabled. The script has been adapted and tested to run with SELinux.
-- Depending on the OS, apache may be installed as apache, apache2, apache22 or httpd.
 - The script downloads the given version from the XNAT ftp side.
 - The script does not modify any firewall settings, for security reasons. To make the website accessable, please make sure that port 80 and 8104 (dicom gateway) are open in iptables or any other firewall service.
 
