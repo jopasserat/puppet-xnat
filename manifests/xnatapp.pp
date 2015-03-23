@@ -23,8 +23,6 @@ define xnat::xnatapp (
   $tomcat_web_user,
   $tomcat_web_password,
   $tomcat_port,
-  $apache_port,
-  $apache_mail_address,
   $xnat_version,
   $java_opts,
   $catalina_tmp_dir,
@@ -54,9 +52,8 @@ define xnat::xnatapp (
 
 # $tomcat_root = "/usr/share/tomcat7"
   $installer_dir = "/home/$system_user/xnat"
-  # FIXME problematic with vagrant -> accessing XNAT through localhost gets replaced
-  # by VM's IP (not routed) beyond login page
-  $xnat_url = "http://${::ipaddress}:$apache_port/"
+  # FIXME change 8080 to tomcat_port
+  $xnat_url = "http://localhost:8080"
 
   # Add to paths. Could use absolute paths, but some external modules don't do this anyway.
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
@@ -71,22 +68,21 @@ define xnat::xnatapp (
   } ->
   class { 'epel': }->
   tomcat::instance{ 'default':
-      package_name  => "$tomcat_version",
-  }->
-  tomcat::service { 'default':
-    use_jsvc     => false,
-    use_init     => true,
-    service_name => "$tomcat_version",
+    package_name  => "$tomcat_version",
     catalina_home => "/usr/share/${tomcat_version}",
     catalina_base => "/var/lib/${tomcat_version}",
-  } 
-  # tomcat::config::server { 'default':
+  } ->
+  #tomcat::config::server { 'default':
   #  port => $tomcat_port,
   #}
   #tomcat::config::server::connector { 'default':
   #  port   => $tomcat_port,
-    #  notify => Service['tomcat7'],
-    #}
+  #} ->
+  tomcat::service { 'default':
+    use_jsvc     => false,
+    use_init     => true,
+    service_name => "$tomcat_version",
+  }
 #  tomcat { "install tomcat": 
 #TODO can we configure web user/pwd? + remaining conf in original tomcat.pp
 #    tomcat_web_user => $tomcat_web_user,
@@ -170,10 +166,26 @@ define xnat::xnatapp (
 
 
   ### Proxy Tomcat through HTTP server ###
-  # FIXME not working -> replace with Nginx
-  init_apache { "initialize apache proxy":
-    apache_port => $apache_port,
-    apache_mail_address => $apache_mail_address
+  class { 'nginx': }
+
+  nginx::resource::upstream { 'nginx-proxy':
+    members => [
+      "localhost:8080"
+      ],
+  }
+
+  nginx::resource::vhost { 'nginx-proxy':
+      ssl         => true,
+      # the next 2 lines disable http access
+      ssl_port            => 443,
+      listen_port         => 443,
+      ssl_cert            => 'puppet:///modules/xnat/etc/ssl/certs/xnat.crt',
+      ssl_key             => 'puppet:///modules/xnat/etc/ssl/private/xnat.key',
+      proxy               => "http://localhost:8080",
+      proxy_redirect      => 'default',
+      rewrite_to_https    => true,
+      location_cfg_append => { 'proxy_redirect'   => 'http:// https://',
+                               'proxy_set_header' => 'Host $http_host'}
   }
 }
 
