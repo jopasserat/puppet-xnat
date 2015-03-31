@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULES_TO_INSTALL="puppetlabs-ruby jgoettsch-mercurial puppetlabs-postgresql puppetlabs-rsync maestrodev-wget camptocamp-archive puppetlabs-java stahnma-epel jfryman-nginx"
+MODULES_TO_INSTALL="puppetlabs-ruby jgoettsch-mercurial puppetlabs-postgresql puppetlabs-rsync maestrodev-wget camptocamp-archive puppetlabs-java stahnma-epel jfryman-nginx puppetlabs-tomcat"
 MODULES_INSTALLED=`puppet module list`
 
 for i in ${MODULES_TO_INSTALL}; do
