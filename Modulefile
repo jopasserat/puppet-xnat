@@ -1,5 +1,5 @@
-name 'mkoek-xnat'
-version '0.2'
+name 'puppet-xnat'
+version '0.3'
 
-author 'Marcel Koek and Erwin Vast'
-license 'Apache 2.0'
+author 'Jonathan Passerat-Palmbach and Filippo Mortari'
+license 'AGPL 3.0'
