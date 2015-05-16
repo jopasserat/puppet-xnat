@@ -15,9 +15,9 @@ The puppet column lists if the package is installed as a puppet module or custom
 ======   ==========   ==========================  ============================
 Puppet   Package      Install location            Check
 ======   ==========   ==========================  ============================
-No       java         /usr/lib/jvm/{version}      If install location exists
+Yes      java         via package manager         Determined by puppet package
 Yes      postgresql   via package manager         Determined by puppet package
-No       tomcat       /usr/share/tomcat{version}  If install location exists
+Yes      tomcat       via package manager         Determined by puppet package
 No       xnat         /home/xnat/xnat             If install location exists
 Yes      nginx        via package manager         Determined by puppet package
 ======   ==========   ==========================  ============================
