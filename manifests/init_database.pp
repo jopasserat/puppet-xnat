@@ -40,9 +40,10 @@ define xnat::init_database (
 
   # Configure the postgres db
   postgresql::server::db { $db_name:
-    user => $db_username,
-    password => $db_userpassword,
+    user       => $db_username,
+    password   => $db_userpassword,
     tablespace => "tablespace_xnat",
+    owner      => $db_username,
   } ->
 
   # Install plpgsql language
