@@ -156,11 +156,14 @@ define xnat::xnatapp (
     owner  => $::tomcat::user,
     group  => $::tomcat::group,
   } ->
+  file { "$tomcat_root/webapps/$instance_name":
+    ensure => absent,
+    force  => true,
+  } ->
   tomcat::war { "${instance_name}.war":
     war_source      => "$installer_dir/deployments/$instance_name/target/$instance_name.war",
-    deployment_path =>  "$tomcat_root/webapps",
+    deployment_path => "$tomcat_root/webapps",
     war_ensure      => present,
-    war_purge 	    => true,
     notify          => Service[$tomcat_version],
   }
 
