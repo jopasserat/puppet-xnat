@@ -8,7 +8,7 @@ xnat::xnatapp { 'xnat-web-app-1':
   tomcat_web_user => "evast",
   tomcat_web_password => "test123",
   tomcat_port => "8090",
-  xnat_version => "1.6.3",
+  xnat_version => "1.6.4",
   java_opts => "-Xms1024m -Xmx6144m -XX:MaxPermSize=256m",
   catalina_tmp_dir => "/xnatdata/test",
   mail_server => "localhost",
