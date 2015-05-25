@@ -36,7 +36,6 @@ Move tomcat ROOT (see notes)   If {tomcat}/webapps/tomcat does not exist
 *Notes*
 
 - An Nginx proxy is used to redirect requests from port 443 to 8080, which is tomcat's default port.
-- The puppet script also copies a .jinfo file to the java installation location. This is required for a correct java installation with the update-alternatives application.
 - The xnat database can be removed the following way (for testing):
  NOTE: ALL XNAT DATA WILL BE REMOVED! MAKE A BACKUP!
  - sudo -u postgres psql
@@ -66,11 +65,13 @@ Noteworthy settings:
 Compatibility
 -------------
 
-The script has been tested on:
+The original script had been tested on:
 
 - Fedora 20.1
 - RedHat Server 7.0
 - Scientific Linux 6.5
+
+The actual version has been tested on:
 - Ubuntu Server 14.0.4.1
 
 Licencing
