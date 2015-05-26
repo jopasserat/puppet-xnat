@@ -1,4 +1,4 @@
-# Licensed to Biomedical Imaging Group Rotterdam under one or more contributor 
+# Licensed to Biomedical Imaging Group Rotterdam under one or more contributor
 # license agreements. Biomedical Imaging Group Rotterdam licenses this file
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
@@ -24,25 +24,10 @@ define download_xnat (
   } else {
     notify { "downloading XNAT ...": } ->
 
-    class {"xnat::get_xnat": 
+    class {"xnat::get_xnat":
       xnat_version => $xnat_version,
       xnat_local_install => $xnat_local_install
     } ->
-
-    # Clone the xnat builder dev branch, create files and set permissions (step 1)
-    #exec { "mercurial-clone-xnatbuilder":
-    #  command => "hg clone http://hg.xnat.org/xnat_builder_1_6dev $installer_dir$
-    #  creates => $installer_dir,
-    #  timeout => 7200,
-    #} ->
-
-    #notify { "downloading XNAT pipeline ...": } ->
-
-    #exec { "mercurial-clone-xnat-pipeline":
-    #  command => "hg clone http://hg.xnat.org/pipeline_1_6dev $installer_dir/pip$
-    #  creates => "$installer_dir/pipeline",
-    #  timeout => 7200,
-    #} ->
 
     # workaround for https://github.com/camptocamp/puppet-archive/issues/46
     exec {'move xnat to expected location':
@@ -56,3 +41,4 @@ define download_xnat (
     notify { "downloading XNAT and pipeline complete": }
   }
 }
+
