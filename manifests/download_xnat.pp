@@ -44,6 +44,10 @@ define download_xnat (
     #  timeout => 7200,
     #} ->
 
+    # workaround for https://github.com/camptocamp/puppet-archive/issues/46
+    exec {'move xnat to expected location':
+      command => "mv /home/xnat/xnat-$xnat_version /home/xnat/xnat",
+    } ->
     # Cleanup
     exec { "remove /tmp/xnat*":
       command => "rm -f /tmp/xnat*"

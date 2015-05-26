@@ -41,9 +41,4 @@ class xnat::get_xnat (
       require => Rsync::Get["/tmp/xnat-$xnat_version.tar.gz"]
     }
   }
-  ->
-  # workaround for https://github.com/camptocamp/puppet-archive/issues/46
-  exec {'move xnat to expected location':
-    command => "mv /home/xnat/xnat-$xnat_version /home/xnat/xnat",
-  }
 }
